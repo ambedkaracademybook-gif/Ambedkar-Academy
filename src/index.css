@@ -64,4 +64,68 @@ html {
   background: #94a3b8;
 }
 
+/* Scrolling Marquee Animation */
+@keyframes marquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 35s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+.animate-marquee-slow {
+  display: flex;
+  width: max-content;
+  animation: marquee 110s linear infinite;
+}
+
+.animate-marquee-slow:hover {
+  animation-play-state: paused;
+}
+
+/* Gentle Shaking/Wobble Animation for CTA Buttons to draw attention */
+@keyframes gentle-shake {
+  0%, 80%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  85% {
+    transform: rotate(-3deg) scale(1.03);
+  }
+  88% {
+    transform: rotate(3deg) scale(1.03);
+  }
+  91% {
+    transform: rotate(-3deg) scale(1.03);
+  }
+  94% {
+    transform: rotate(3deg) scale(1.03);
+  }
+  97% {
+    transform: rotate(-1deg) scale(1.03);
+  }
+}
+
+.animate-shake {
+  animation: gentle-shake 2s infinite ease-in-out;
+  transform-origin: center;
+  transition: transform 0.2s ease-out;
+}
+
+.animate-shake:hover {
+  animation: none; /* Stops shake completely on hover */
+  transform: scale(1.05); /* Clean hover zoom-in */
+}
+
+
 

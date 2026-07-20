@@ -26,15 +26,13 @@ async function startServer() {
       const {
         fullName,
         whatsAppNumber,
-        district,
         preparingFor,
         currentPosition,
         previousCoaching,
-        utmParameters = {},
       } = req.body;
 
       // Basic validation
-      if (!fullName || !whatsAppNumber || !district || !preparingFor || !currentPosition || !previousCoaching) {
+      if (!fullName || !whatsAppNumber || !preparingFor || !currentPosition || !previousCoaching) {
         return res.status(400).json({ success: false, error: "Missing required fields" });
       }
 
@@ -58,22 +56,24 @@ async function startServer() {
         timestamp,
         fullName,
         whatsAppNumber,
-        district,
         preparingFor,
         currentPosition,
         previousCoaching,
-        utmSource: utmParameters.utm_source || "",
-        utmMedium: utmParameters.utm_medium || "",
-        utmCampaign: utmParameters.utm_campaign || "",
-        utmContent: utmParameters.utm_content || "",
-        utmTerm: utmParameters.utm_term || "",
-        landingPageUrl: utmParameters.landing_page_url || "",
       };
 
-      if (!isDuplicate) {
-        registrations.push(newLead);
-        fs.writeFileSync(DATA_FILE, JSON.stringify(registrations, null, 2));
+      if (isDuplicate) {
+        console.log(`[Registration] Duplicate lead received: ${fullName} (${whatsAppNumber}). Skipping database append & Google Sheets sync.`);
+        return res.status(200).json({
+          success: true,
+          message: "Seat reserved already",
+          sheetStatus: "duplicate_skipped",
+          leadId: -1,
+        });
       }
+
+      // If not duplicate, append to local JSON file
+      registrations.push(newLead);
+      fs.writeFileSync(DATA_FILE, JSON.stringify(registrations, null, 2));
 
       // Forward to Google Sheets (Direct OAuth Integration) or Webhook Fallback
       let sheetStatus = "not_configured";
@@ -93,14 +93,9 @@ async function startServer() {
             timestamp,
             fullName,
             whatsAppNumber,
-            district,
             preparingFor,
             currentPosition,
             previousCoaching,
-            utmParameters.utm_source || "",
-            utmParameters.utm_medium || "",
-            utmParameters.utm_campaign || "",
-            utmParameters.landing_page_url || ""
           ];
 
           const response = await fetch(
@@ -131,26 +126,21 @@ async function startServer() {
           console.error("[Google Sheets Direct] Error writing to sheet:", sheetError);
           sheetStatus = `error: ${sheetError.message}`;
         }
-      } else {
-        // Fallback to Google Sheets Webhook / Apps Script if configured in environment
+      }
+
+      // Fallback/direct attempt using Webhook if Direct Sync was not configured or if it failed (e.g. expired token)
+      if (sheetStatus !== "success") {
         const webhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
         if (webhookUrl && webhookUrl.trim() !== "") {
-          console.log(`[Sheets Webhook] Attempting to forward lead to Webhook URL: ${webhookUrl}`);
+          console.log(`[Sheets Webhook Fallback] Attempting to forward lead to Webhook URL: ${webhookUrl} (Direct Status: ${sheetStatus})`);
           try {
             const sheetPayload = {
               timestamp,
               fullName,
               whatsAppNumber,
-              district,
               preparingFor,
               currentPosition,
               previousCoaching,
-              utmSource: utmParameters.utm_source || "",
-              utmMedium: utmParameters.utm_medium || "",
-              utmCampaign: utmParameters.utm_campaign || "",
-              utmContent: utmParameters.utm_content || "",
-              utmTerm: utmParameters.utm_term || "",
-              landingPageUrl: utmParameters.landing_page_url || "",
             };
 
             const response = await fetch(webhookUrl, {
@@ -165,17 +155,21 @@ async function startServer() {
 
             if (response.ok) {
               sheetStatus = "success";
-              console.log(`[Sheets Webhook] Lead successfully logged to Google Sheet.`);
+              console.log(`[Sheets Webhook] Lead successfully logged to Google Sheet via Webhook.`);
             } else {
-              sheetStatus = `failed_status_${response.status}`;
-              console.error(`[Sheets Webhook] Failed to log lead. Server returned non-200 response.`);
+              sheetStatus = `${sheetStatus}_and_webhook_failed_status_${response.status}`;
+              console.error(`[Sheets Webhook] Failed to log lead via Webhook.`);
             }
           } catch (webhookError: any) {
             console.error("[Sheets Webhook] Network error forwarding to webhook:", webhookError);
-            sheetStatus = `error: ${webhookError.message}`;
+            sheetStatus = `${sheetStatus}_and_webhook_error_${webhookError.message}`;
           }
         } else {
-          console.warn(`[Sheets Direct / Webhook] No Sheets configuration or GOOGLE_SHEETS_WEBHOOK_URL found. Lead saved locally in registrations.json only.`);
+          if (sheetStatus === "not_configured") {
+            console.warn(`[Sheets Direct / Webhook] No Sheets configuration or GOOGLE_SHEETS_WEBHOOK_URL found. Lead saved locally in registrations.json only.`);
+          } else {
+            console.warn(`[Sheets Direct] Direct Sheets sync failed (${sheetStatus}) and no GOOGLE_SHEETS_WEBHOOK_URL fallback is configured.`);
+          }
         }
       }
 
@@ -271,19 +265,14 @@ async function startServer() {
         sheetTitle = data.sheets?.[0]?.properties?.title || "Sheet1";
 
         // Write header row to the newly created spreadsheet
-        const headerRange = `${sheetTitle}!A1:K1`;
+        const headerRange = `${sheetTitle}!A1:F1`;
         const headers = [
           "Timestamp",
           "Full Name",
           "WhatsApp Number",
-          "District",
           "Preparing For",
           "Current Position",
           "Previous Coaching",
-          "UTM Source",
-          "UTM Medium",
-          "UTM Campaign",
-          "Landing Page URL",
         ];
 
         const appendResponse = await fetch(
@@ -325,6 +314,100 @@ async function startServer() {
       });
     } catch (error: any) {
       console.error("Sheets setup error:", error);
+      return res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  // API Route: Sync All Registrations to Google Sheet
+  app.post("/api/sheets/sync-all", async (req, res) => {
+    try {
+      const { accessToken } = req.body;
+      if (!accessToken) {
+        return res.status(400).json({ success: false, error: "Access token is required" });
+      }
+
+      const SHEETS_CONFIG_FILE = path.join(DATA_DIR, "sheets_config.json");
+      if (!fs.existsSync(SHEETS_CONFIG_FILE)) {
+        return res.status(404).json({ success: false, error: "Google Sheets is not connected" });
+      }
+
+      const config = JSON.parse(fs.readFileSync(SHEETS_CONFIG_FILE, "utf-8"));
+      const { spreadsheetId, sheetTitle = "Sheet1" } = config;
+
+      // Read registrations
+      let registrations = [];
+      try {
+        const fileContent = fs.readFileSync(DATA_FILE, "utf-8");
+        registrations = JSON.parse(fileContent);
+      } catch (e) {
+        registrations = [];
+      }
+
+      if (registrations.length === 0) {
+        return res.json({ success: true, message: "No registrations to sync.", syncedCount: 0 });
+      }
+
+      // Format data rows
+      const rows = registrations.map((r: any) => [
+        r.timestamp,
+        r.fullName,
+        r.whatsAppNumber,
+        r.preparingFor,
+        r.currentPosition,
+        r.previousCoaching,
+      ]);
+
+      // Clear the sheet first to avoid duplicate or ghost entries
+      const clearResponse = await fetch(
+        `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetTitle}!A2:F10000:clear`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      if (!clearResponse.ok) {
+        console.warn("[Sheets Sync] Clear range failed:", clearResponse.statusText);
+      }
+
+      // Write values to the sheet starting from A2
+      const range = `${sheetTitle}!A2:F${1 + registrations.length}`;
+      const updateResponse = await fetch(
+        `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?valueInputOption=USER_ENTERED`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            values: rows,
+          }),
+        }
+      );
+
+      if (!updateResponse.ok) {
+        const errData = await updateResponse.json().catch(() => ({}));
+        return res.status(updateResponse.status).json({
+          success: false,
+          error: `Failed to write data: ${errData.error?.message || updateResponse.statusText}`,
+        });
+      }
+
+      // Update the saved configuration with the latest active accessToken and updatedAt timestamp
+      config.accessToken = accessToken;
+      config.updatedAt = new Date().toISOString();
+      fs.writeFileSync(SHEETS_CONFIG_FILE, JSON.stringify(config, null, 2));
+
+      return res.json({
+        success: true,
+        message: `Successfully synced ${registrations.length} registrations to Google Sheet!`,
+        syncedCount: registrations.length,
+      });
+    } catch (error: any) {
+      console.error("Sheets sync-all error:", error);
       return res.status(500).json({ success: false, error: error.message });
     }
   });
