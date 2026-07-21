@@ -722,68 +722,68 @@ export default function App() {
   // Render Thank You Page View
   if (currentPath === "/thank-you" || currentPath === "/thank-you/") {
     return (
-      <div id="thank-you-view" className="min-h-screen bg-slate-50 text-slate-800 font-sans flex flex-col justify-between selection:bg-amber-500 selection:text-slate-950 relative overflow-hidden">
+      <div id="thank-you-view" className="min-h-screen bg-[#030303] text-slate-100 font-sans flex flex-col justify-between selection:bg-amber-500 selection:text-slate-950 relative overflow-hidden gold-diagonal-lines gold-geometric-grid">
         {/* Animated Background Circles */}
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-gradient-to-tr from-amber-500/10 to-orange-600/5 rounded-full blur-3xl pointer-events-none opacity-40"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-gradient-to-br from-blue-500/5 to-purple-600/5 rounded-full blur-3xl pointer-events-none opacity-30"></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-gradient-to-tr from-amber-500/10 to-yellow-600/5 rounded-full blur-3xl pointer-events-none opacity-40 animate-pulse"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-gradient-to-br from-amber-600/5 to-yellow-600/5 rounded-full blur-3xl pointer-events-none opacity-30"></div>
 
         {/* Main Content */}
         <div className="flex-grow flex items-center justify-center px-4 py-12 md:py-20 relative z-10">
-          <div className="w-full max-w-2xl bg-white border border-slate-200/80 rounded-3xl p-6 md:p-12 text-center shadow-xl relative overflow-hidden">
+          <div className="w-full max-w-2xl bg-[#0a0908]/95 border border-amber-500/25 rounded-3xl p-6 md:p-12 text-center shadow-2xl relative overflow-hidden glow-gold">
             {/* Subtle background decoration */}
-            <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500"></div>
+            <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600"></div>
             
             {/* Checked animation icon */}
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full mb-6 border border-emerald-200">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-amber-500/10 text-amber-400 rounded-full mb-6 border border-amber-500/35 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
               <CheckCircle className="w-12 h-12 stroke-[1.5]" />
             </div>
 
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 mb-4 tracking-wider uppercase border border-emerald-200/50">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 mb-4 tracking-wider uppercase border border-amber-500/20">
               Seat Confirmed
             </span>
 
-            <h1 className="text-2xl md:text-3xl font-extrabold font-display tracking-tight text-slate-900 mb-4">
+            <h1 className="text-2xl md:text-3xl font-extrabold font-display tracking-tight text-white mb-4 glow-gold-text">
               Your Workshop Registration Is Confirmed!
             </h1>
-            <p className="text-slate-600 text-sm md:text-base mb-8 max-w-lg mx-auto">
-              Thank you for registering for the <span className="text-amber-600 font-bold font-display">TNPSC Success Blueprint Workshop 2026</span>.
+            <p className="text-slate-300 text-sm md:text-base mb-8 max-w-lg mx-auto">
+              Thank you for registering for the <span className="text-amber-400 font-bold font-display">TNPSC Success Blueprint Workshop 2026</span>.
             </p>
 
             {/* Event Info Card */}
-            <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-6 text-left mb-8 max-w-lg mx-auto space-y-4 shadow-sm">
-              <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-200 pb-2">
+            <div className="bg-black/40 border border-amber-500/20 rounded-2xl p-6 text-left mb-8 max-w-lg mx-auto space-y-4 shadow-inner">
+              <h3 className="text-xs font-black text-amber-400 uppercase tracking-widest border-b border-slate-800 pb-2">
                 Workshop Invitation Details
               </h3>
               <div className="flex items-start gap-3">
-                <Calendar className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+                <Calendar className="w-5 h-5 text-amber-400 mt-0.5 shrink-0" />
                 <div>
                   <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Date</p>
-                  <p className="text-sm font-bold text-slate-900">August 2, 2026 (Sunday)</p>
+                  <p className="text-sm font-bold text-white">August 2, 2026 (Sunday)</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <Clock className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+                <Clock className="w-5 h-5 text-amber-400 mt-0.5 shrink-0" />
                 <div>
                   <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Time</p>
-                  <p className="text-sm font-bold text-slate-900">11:00 AM – 1:00 PM IST</p>
+                  <p className="text-sm font-bold text-white">11:00 AM – 1:00 PM IST</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+                <MapPin className="w-5 h-5 text-amber-400 mt-0.5 shrink-0" />
                 <div>
                   <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Venue</p>
-                  <p className="text-sm font-bold text-slate-900">Ambedkar Academy</p>
-                  <p className="text-xs text-slate-600">T. Nagar, Chennai (Opp. to Bus Terminus / Near Metro)</p>
+                  <p className="text-sm font-bold text-white">Ambedkar Academy</p>
+                  <p className="text-xs text-slate-400">T. Nagar, Chennai (Opp. to Bus Terminus / Near Metro)</p>
                 </div>
               </div>
             </div>
 
             {/* Next Step WhatsApp box */}
-            <div className="bg-emerald-50/50 border border-emerald-200 rounded-2xl p-6 md:p-8 max-w-lg mx-auto">
-              <h2 className="text-base md:text-lg font-bold text-emerald-800 flex items-center justify-center gap-2 mb-2 font-display uppercase tracking-wide">
-                <Sparkles className="w-5 h-5 animate-pulse text-emerald-600" /> IMPORTANT NEXT STEP
+            <div className="bg-slate-900/65 border border-emerald-500/20 rounded-2xl p-6 md:p-8 max-w-lg mx-auto">
+              <h2 className="text-base md:text-lg font-bold text-emerald-400 flex items-center justify-center gap-2 mb-2 font-display uppercase tracking-wide">
+                <Sparkles className="w-5 h-5 animate-pulse text-emerald-400" /> IMPORTANT NEXT STEP
               </h2>
-              <p className="text-xs md:text-sm text-slate-600 mb-6 font-medium leading-relaxed">
+              <p className="text-xs md:text-sm text-slate-300 mb-6 font-medium leading-relaxed">
                 Join our official WhatsApp group to receive free preparation guides, direct session links, and live event updates.
               </p>
 
@@ -798,7 +798,7 @@ export default function App() {
                 <ArrowRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform" />
               </a>
 
-              <div className="flex justify-center flex-wrap gap-x-4 gap-y-1.5 mt-4 text-[10px] uppercase tracking-wider font-bold text-emerald-700/90">
+              <div className="flex justify-center flex-wrap gap-x-4 gap-y-1.5 mt-4 text-[10px] uppercase tracking-wider font-bold text-emerald-400">
                 <span className="flex items-center gap-1">
                   <Check className="w-3.5 h-3.5 stroke-[3]" /> Study Materials
                 </span>
@@ -812,7 +812,7 @@ export default function App() {
 
               {redirectCount > 0 ? (
                 <p className="text-[11px] text-slate-400 mt-6 italic">
-                  Redirecting to WhatsApp automatically in <span className="text-emerald-700 font-bold not-italic">{redirectCount}</span> seconds...
+                  Redirecting to WhatsApp automatically in <span className="text-emerald-400 font-bold not-italic">{redirectCount}</span> seconds...
                 </p>
               ) : (
                 <p className="text-[11px] text-slate-400 mt-6 italic">
@@ -823,7 +823,7 @@ export default function App() {
 
             <button
               onClick={() => navigateTo("/")}
-              className="mt-8 text-slate-400 hover:text-slate-700 text-xs font-semibold transition cursor-pointer"
+              className="mt-8 text-amber-500 hover:text-amber-400 text-xs font-semibold transition cursor-pointer"
             >
               ← Go back to Landing Page
             </button>
@@ -831,7 +831,7 @@ export default function App() {
         </div>
 
         {/* Minimal Footer */}
-        <footer className="py-6 border-t border-slate-200 bg-white text-center text-[11px] text-slate-400">
+        <footer className="py-6 border-t border-slate-900 bg-black text-center text-[11px] text-slate-500">
           <p>© 2026 Ambedkar Academy. T. Nagar, Chennai. All rights reserved.</p>
         </footer>
       </div>
@@ -840,67 +840,65 @@ export default function App() {
 
   // Main Landing Page View
   return (
-    <div className="min-h-screen bg-white text-slate-800 font-sans antialiased selection:bg-amber-500 selection:text-slate-950 relative overflow-hidden">
+    <div className="min-h-screen bg-[#030303] text-slate-200 font-sans antialiased selection:bg-amber-500 selection:text-slate-950 relative overflow-hidden gold-diagonal-lines gold-geometric-grid">
       
       {/* URGENCY BANNER / SCROLLING MARQUEE */}
-      <div id="urgency-scrolling-marquee" className="bg-amber-500 text-slate-950 text-[10px] md:text-xs py-1.5 font-extrabold overflow-hidden relative z-50 border-b border-amber-600 shadow-sm">
+      <div id="urgency-scrolling-marquee" className="bg-black text-amber-400 text-[10px] md:text-xs py-2 font-extrabold overflow-hidden relative z-50 border-b border-amber-500/20 shadow-lg">
         <div className="animate-marquee whitespace-nowrap flex items-center gap-16">
           <div className="flex items-center gap-8 shrink-0">
-            <span className="bg-slate-950 text-amber-400 text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider animate-pulse shrink-0">Limited Seats Left</span>
-            <span className="font-sans font-extrabold uppercase">🚨 HURRY UP! ONLY LIMITED SEATS ARE LEFT FOR THE FREE AUGUST 2ND TNPSC WORKSHOP! REGISTER NOW TO SECURE YOUR SPOT! 🚨</span>
-            <span className="text-slate-950/40">|</span>
-            <span className="font-sans font-extrabold uppercase text-slate-950">🚨 ஆகஸ்ட் 2ஆம் தேதி நடைபெறும் இலவச TNPSC வழிகாட்டுதல் வகுப்பிற்கு மிகக் குறைந்த இடங்களே உள்ளன! உடனே பதிவு செய்யவும்! 🚨</span>
+            <span className="bg-amber-500 text-slate-950 text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider animate-pulse shrink-0">Limited Seats Left</span>
+            <span className="font-sans font-extrabold uppercase text-white">🚨 HURRY UP! ONLY LIMITED SEATS ARE LEFT FOR THE FREE AUGUST 2ND TNPSC WORKSHOP! REGISTER NOW TO SECURE YOUR SPOT! 🚨</span>
+            <span className="text-amber-500/40">|</span>
+            <span className="font-sans font-extrabold uppercase text-amber-400">🚨 ஆகஸ்ட் 2ஆம் தேதி நடைபெறும் இலவச TNPSC வழிகாட்டுதல் வகுப்பிற்கு மிகக் குறைந்த இடங்களே உள்ளன! உடனே பதிவு செய்யவும்! 🚨</span>
           </div>
           <div className="flex items-center gap-8 shrink-0">
-            <span className="bg-slate-950 text-amber-400 text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider animate-pulse shrink-0">Limited Seats Left</span>
-            <span className="font-sans font-extrabold uppercase">🚨 HURRY UP! ONLY LIMITED SEATS ARE LEFT FOR THE FREE AUGUST 2ND TNPSC WORKSHOP! REGISTER NOW TO SECURE YOUR SPOT! 🚨</span>
-            <span className="text-slate-950/40">|</span>
-            <span className="font-sans font-extrabold uppercase text-slate-950">🚨 ஆகஸ்ட் 2ஆம் தேதி நடைபெறும் இலவச TNPSC வழிகாட்டுதல் வகுப்பிற்கு மிகக் குறைந்த இடங்களே உள்ளன! உடனே பதிவு செய்யவும்! 🚨</span>
+            <span className="bg-amber-500 text-slate-950 text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider animate-pulse shrink-0">Limited Seats Left</span>
+            <span className="font-sans font-extrabold uppercase text-white">🚨 HURRY UP! ONLY LIMITED SEATS ARE LEFT FOR THE FREE AUGUST 2ND TNPSC WORKSHOP! REGISTER NOW TO SECURE YOUR SPOT! 🚨</span>
+            <span className="text-amber-500/40">|</span>
+            <span className="font-sans font-extrabold uppercase text-amber-400">🚨 ஆகஸ்ட் 2ஆம் தேதி நடைபெறும் இலவச TNPSC வழிகாட்டுதல் வகுப்பிற்கு மிகக் குறைந்த இடங்களே உள்ளன! உடனே பதிவு செய்யவும்! 🚨</span>
           </div>
         </div>
       </div>
 
       {/* Decorative Blur Background Lights */}
-      <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-500/8 to-transparent rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute top-[20%] right-[-10%] w-[50%] h-[50%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-500/5 to-transparent rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-[20%] left-[-10%] w-[50%] h-[50%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-orange-500/8 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-500/5 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute top-[20%] right-[-10%] w-[50%] h-[50%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-yellow-500/5 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-[20%] left-[-10%] w-[50%] h-[50%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-600/5 to-transparent rounded-full blur-3xl pointer-events-none"></div>
 
       {/* SECTION 1 – HERO / ABOVE THE FOLD */}
-      <section className="relative overflow-hidden pt-8 md:pt-12 pb-12 border-b border-slate-200/80 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-50/15 via-white to-slate-50/20">
+      <section className="relative overflow-hidden pt-8 md:pt-12 pb-12 border-b border-amber-500/10 bg-gradient-to-b from-black via-[#080706] to-black">
         
-        {/* 1. Deepest Layer: Rich soft glowing blurry patterns (Glowing Pearl Orbs & Amber Lights) */}
+        {/* 1. Deepest Layer: Rich soft glowing blurry patterns */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
           {/* Large soft amber glow */}
-          <div className="absolute -top-[10%] left-[5%] w-[45%] h-[45%] bg-amber-200/20 rounded-full blur-[100px]"></div>
+          <div className="absolute -top-[10%] left-[5%] w-[45%] h-[45%] bg-amber-500/5 rounded-full blur-[100px]"></div>
           {/* Large soft peach/orange glow */}
-          <div className="absolute top-[25%] right-[10%] w-[35%] h-[35%] bg-orange-100/30 rounded-full blur-[90px]"></div>
-          {/* Pure white bright pearl orbs to create elegant glass reflections */}
-          <div className="absolute top-[15%] left-[20%] w-44 h-44 bg-white rounded-full blur-[40px] opacity-70"></div>
-          <div className="absolute bottom-[10%] right-[30%] w-56 h-56 bg-white rounded-full blur-[60px] opacity-80"></div>
-          {/* Subtle soft grey contrast glow */}
-          <div className="absolute bottom-[-10%] left-[10%] w-[40%] h-[40%] bg-slate-100/50 rounded-full blur-[110px]"></div>
+          <div className="absolute top-[25%] right-[10%] w-[35%] h-[35%] bg-yellow-600/5 rounded-full blur-[90px]"></div>
+          {/* Pure amber bright pearl orbs to create elegant glass reflections */}
+          <div className="absolute top-[15%] left-[20%] w-44 h-44 bg-amber-500/5 rounded-full blur-[40px] opacity-40"></div>
+          <div className="absolute bottom-[10%] right-[30%] w-56 h-56 bg-yellow-500/5 rounded-full blur-[60px] opacity-40"></div>
         </div>
 
-        {/* 2. Glassmorphic Backdrop Layer: Frosted white blur to blend the colors softly */}
-        <div className="absolute inset-0 bg-white/45 backdrop-blur-[10px] pointer-events-none"></div>
+        {/* 2. Glassmorphic Backdrop Layer: Frosted black blur to blend the colors softly */}
+        <div className="absolute inset-0 bg-black/45 backdrop-blur-[10px] pointer-events-none"></div>
 
-        {/* 3. Grid Lines & Pattern Layer (Above the blur to keep lines crisp, matching the attached screenshot) */}
+        {/* 3. Grid Lines & Pattern Layer */}
         <div className="absolute inset-0 pointer-events-none select-none">
-          {/* Crisp, clean grey-blue square grid lines matching user's reference image */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] opacity-40"></div>
+          {/* Crisp, clean gold square grid lines matching user's reference image */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(212,175,55,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(212,175,55,0.06)_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] opacity-70"></div>
           {/* Subtle micro dots for texture */}
-          <div className="absolute inset-0 opacity-[0.08] bg-[radial-gradient(circle_at_1px_1px,_#475569_1px,_transparent_0)] bg-[size:1.75rem_1.75rem]"></div>
+          <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle_at_1px_1px,_#d4af37_1px,_transparent_0)] bg-[size:1.75rem_1.75rem]"></div>
         </div>
         
         {/* 4. Elegant Minimalist Dr. Ambedkar & Text Watermark Background - Layered softly over the grid */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none select-none opacity-[0.035]">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none select-none opacity-[0.02]">
           {/* Minimalist text watermark overlay */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <span className="text-[11vw] font-black tracking-[1.3em] text-slate-900 font-display uppercase whitespace-nowrap pl-[1.3em]">AMBEDKAR</span>
+            <span className="text-[11vw] font-black tracking-[1.3em] text-white font-display uppercase whitespace-nowrap pl-[1.3em]">AMBEDKAR</span>
           </div>
 
           {/* Dr. B.R. Ambedkar Iconic Silhouette */}
-          <div className="absolute right-[5%] lg:right-[35%] bottom-[-5%] lg:bottom-[-8%] w-[280px] sm:w-[350px] lg:w-[420px] h-auto text-slate-950 flex items-center justify-center">
+          <div className="absolute right-[5%] lg:right-[35%] bottom-[-5%] lg:bottom-[-8%] w-[280px] sm:w-[350px] lg:w-[420px] h-auto text-amber-500/20 flex items-center justify-center">
             <svg viewBox="0 0 200 200" fill="currentColor" className="w-full h-full">
               <path d="M 60,60 C 60,40 80,30 100,30 C 120,30 140,40 140,60 C 140,75 142,85 142,95 C 135,100 120,105 100,105 C 80,105 65,100 58,95 C 58,85 60,75 60,60 Z" />
               <path d="M 54,75 C 51,75 51,85 54,85 Z" />
@@ -930,56 +928,56 @@ export default function App() {
             {/* Left side: Workshop information */}
             <div className="lg:col-span-7 space-y-6">
               
-              <div className="inline-flex items-center gap-2 bg-amber-500/10 text-amber-700 px-3.5 py-1.5 rounded-full border border-amber-500/15 text-xs font-bold uppercase tracking-wider">
-                <Sparkles className="w-4 h-4 animate-pulse text-amber-600" />
+              <div className="inline-flex items-center gap-2 bg-amber-500/10 text-amber-400 px-3.5 py-1.5 rounded-full border border-amber-500/25 text-xs font-bold uppercase tracking-wider">
+                <Sparkles className="w-4 h-4 animate-pulse text-amber-400" />
                 FREE TNPSC WORKSHOP • LIMITED SEATS
               </div>
 
               <div className="space-y-3.5">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-black font-display leading-[1.15] tracking-tight text-slate-900">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-black font-display leading-[1.15] tracking-tight text-white glow-gold-text">
                   TNPSC SUCCESS
-                  <span className="block bg-gradient-to-r from-amber-600 via-orange-600 to-amber-500 bg-clip-text text-transparent mt-1.5">
+                  <span className="block bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-600 bg-clip-text text-transparent mt-1.5 font-display">
                     BLUEPRINT 2026
                   </span>
                 </h1>
-                <p className="text-sm sm:text-base text-slate-600 font-medium max-w-xl leading-relaxed">
+                <p className="text-sm sm:text-base text-slate-300 font-medium max-w-xl leading-relaxed">
                   FREE Interactive Strategy Workshop for TNPSC Group 1, Group 2 &amp; Group 4 Aspirants. Learn how to clear in your very first attempt!
                 </p>
               </div>
 
               {/* Highlight Quote */}
               <div className="border-l-4 border-amber-500 pl-4 py-1 my-3 bg-amber-500/5 rounded-r-xl max-w-lg">
-                <p className="text-slate-700 italic font-semibold text-sm md:text-base leading-relaxed">
+                <p className="text-slate-200 italic font-semibold text-sm md:text-base leading-relaxed">
                   "Don't Just Study Hard... Study with the Right Strategy."
                 </p>
               </div>
 
               {/* Countdown Timer (Medium Size) */}
-              <div className="bg-white/95 border border-slate-200/80 rounded-2xl p-4 max-w-md shadow-sm">
+              <div className="bg-[#0c0a09]/90 border border-amber-500/20 rounded-2xl p-4 max-w-md shadow-lg">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3.5 justify-between">
-                  <span className="text-[11px] text-amber-700 font-black uppercase tracking-widest flex items-center gap-1.5 shrink-0">
-                    <Clock className="w-4 h-4 animate-pulse text-amber-600" /> STARTS IN:
+                  <span className="text-[11px] text-amber-400 font-black uppercase tracking-widest flex items-center gap-1.5 shrink-0">
+                    <Clock className="w-4 h-4 animate-pulse text-amber-400" /> STARTS IN:
                   </span>
                   
                   {timeLeft.isExpired ? (
-                    <span className="text-slate-600 font-bold text-sm">Registration Closed</span>
+                    <span className="text-slate-400 font-bold text-sm">Registration Closed</span>
                   ) : (
                     <div className="flex items-center gap-2 font-mono">
-                      <div className="flex items-baseline gap-1 bg-slate-50 border border-slate-200/50 rounded-xl px-3 py-1">
-                        <span className="text-sm font-black text-slate-900">{String(timeLeft.days).padStart(2, "0")}</span>
-                        <span className="text-[10px] uppercase text-slate-400 font-bold">d</span>
+                      <div className="flex items-baseline gap-1 bg-black border border-slate-800 rounded-xl px-3 py-1">
+                        <span className="text-sm font-black text-white">{String(timeLeft.days).padStart(2, "0")}</span>
+                        <span className="text-[10px] uppercase text-slate-500 font-bold">d</span>
                       </div>
-                      <div className="flex items-baseline gap-1 bg-slate-50 border border-slate-200/50 rounded-xl px-3 py-1">
-                        <span className="text-sm font-black text-slate-900">{String(timeLeft.hours).padStart(2, "0")}</span>
-                        <span className="text-[10px] uppercase text-slate-400 font-bold">h</span>
+                      <div className="flex items-baseline gap-1 bg-black border border-slate-800 rounded-xl px-3 py-1">
+                        <span className="text-sm font-black text-white">{String(timeLeft.hours).padStart(2, "0")}</span>
+                        <span className="text-[10px] uppercase text-slate-500 font-bold">h</span>
                       </div>
-                      <div className="flex items-baseline gap-1 bg-slate-50 border border-slate-200/50 rounded-xl px-3 py-1">
-                        <span className="text-sm font-black text-slate-900">{String(timeLeft.minutes).padStart(2, "0")}</span>
-                        <span className="text-[10px] uppercase text-slate-400 font-bold font-sans">m</span>
+                      <div className="flex items-baseline gap-1 bg-black border border-slate-800 rounded-xl px-3 py-1">
+                        <span className="text-sm font-black text-white">{String(timeLeft.minutes).padStart(2, "0")}</span>
+                        <span className="text-[10px] uppercase text-slate-500 font-bold font-sans">m</span>
                       </div>
-                      <div className="flex items-baseline gap-1 bg-slate-50 border border-slate-200/50 rounded-xl px-3 py-1">
-                        <span className="text-sm font-black text-amber-600">{String(timeLeft.seconds).padStart(2, "0")}</span>
-                        <span className="text-[10px] uppercase text-amber-500 font-bold font-sans">s</span>
+                      <div className="flex items-baseline gap-1 bg-black border border-amber-500/20 rounded-xl px-3 py-1">
+                        <span className="text-sm font-black text-amber-400">{String(timeLeft.seconds).padStart(2, "0")}</span>
+                        <span className="text-[10px] uppercase text-amber-400 font-bold font-sans">s</span>
                       </div>
                     </div>
                   )}
@@ -989,30 +987,30 @@ export default function App() {
               {/* Quick Details Grid - 4 Columns, 2 Rows on Mobile, 4 Columns, 1 Row on Desktop */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 max-w-xl pt-2">
                 {/* DATE */}
-                <div className="bg-white/95 border border-slate-200/80 p-3.5 rounded-xl flex flex-col justify-between shadow-xs">
+                <div className="bg-[#0c0a09]/90 border border-amber-500/10 p-3.5 rounded-xl flex flex-col justify-between shadow-md">
                   <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest block mb-1">DATE</span>
-                  <span className="text-sm font-extrabold text-slate-800 leading-tight">August 2, 2026</span>
+                  <span className="text-sm font-extrabold text-white leading-tight">August 2, 2026</span>
                   <span className="text-[10px] text-slate-400 font-semibold mt-0.5">(Sunday)</span>
                 </div>
 
                 {/* TIME */}
-                <div className="bg-white/95 border border-slate-200/80 p-3.5 rounded-xl flex flex-col justify-between shadow-xs">
+                <div className="bg-[#0c0a09]/90 border border-amber-500/10 p-3.5 rounded-xl flex flex-col justify-between shadow-md">
                   <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest block mb-1">TIME</span>
-                  <span className="text-sm font-extrabold text-slate-800 leading-tight">11:00 AM</span>
+                  <span className="text-sm font-extrabold text-white leading-tight">11:00 AM</span>
                   <span className="text-[10px] text-slate-400 font-semibold mt-0.5">to 1:00 PM IST</span>
                 </div>
 
                 {/* VENUE */}
-                <div className="bg-white/95 border border-slate-200/80 p-3.5 rounded-xl flex flex-col justify-between shadow-xs">
+                <div className="bg-[#0c0a09]/90 border border-amber-500/10 p-3.5 rounded-xl flex flex-col justify-between shadow-md">
                   <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest block mb-1">VENUE</span>
-                  <span className="text-sm font-extrabold text-slate-800 leading-tight">T. Nagar</span>
+                  <span className="text-sm font-extrabold text-white leading-tight">T. Nagar</span>
                   <span className="text-[10px] text-slate-400 font-semibold mt-0.5">Chennai Offline</span>
                 </div>
 
                 {/* SPEAKERS */}
-                <div className="bg-white/95 border border-slate-200/80 p-3.5 rounded-xl flex flex-col justify-between shadow-xs">
+                <div className="bg-[#0c0a09]/90 border border-amber-500/10 p-3.5 rounded-xl flex flex-col justify-between shadow-md">
                   <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest block mb-1">SPEAKERS</span>
-                  <span className="text-sm font-extrabold text-slate-800 leading-tight">M. Rafi (Founder)</span>
+                  <span className="text-sm font-extrabold text-white leading-tight">M. Rafi (Founder)</span>
                   <span className="text-[10px] text-slate-400 font-semibold mt-0.5">&amp; Special Guest</span>
                 </div>
               </div>
@@ -1021,7 +1019,7 @@ export default function App() {
               <div className="pt-2 block lg:hidden">
                 <button
                   onClick={scrollToForm}
-                  className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-bold py-4 px-6 rounded-xl text-base tracking-wide shadow-md active:scale-98 transition duration-150 animate-shake"
+                  className="w-full inline-flex items-center justify-center gap-2 gold-metallic-gradient gold-metallic-hover text-slate-950 font-black py-4 px-6 rounded-xl text-base tracking-wide shadow-lg active:scale-98 transition duration-150 animate-shake"
                 >
                   REGISTER FREE NOW
                   <ArrowRight className="w-5 h-5" />
@@ -1033,25 +1031,25 @@ export default function App() {
             {/* Right side: Medium-Sized Registration form */}
             <div className="lg:col-span-5 relative" id="registration-form">
               {/* Highlight background glow */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 to-orange-600 rounded-3xl blur-md opacity-25 animate-pulse"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 to-yellow-600 rounded-3xl blur-md opacity-20 animate-pulse"></div>
               
-              <div className="relative text-slate-800 rounded-3xl p-6 md:p-8 shadow-xl border border-slate-200/80 bg-white/95">
+              <div className="relative text-slate-100 rounded-3xl p-6 md:p-8 shadow-2xl border border-amber-500/20 bg-slate-900/90 backdrop-blur-md">
                 
                 {/* Form header badge */}
-                <div className="flex justify-between items-center mb-4 pb-4 border-b border-slate-100">
-                  <span className="text-[10px] font-black uppercase tracking-wider bg-orange-500/10 text-orange-600 px-3 py-1 rounded border border-orange-500/10">
+                <div className="flex justify-between items-center mb-4 pb-4 border-b border-slate-800">
+                  <span className="text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-400 px-3 py-1 rounded border border-amber-500/20">
                     LIMITED SEATS
                   </span>
-                  <span className="text-[10px] font-bold text-slate-500 flex items-center gap-1 uppercase">
-                    <ShieldCheck className="w-4 h-4 text-emerald-600" /> Free Seat
+                  <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1 uppercase">
+                    <ShieldCheck className="w-4 h-4 text-amber-400" /> Free Seat
                   </span>
                 </div>
 
                 <div className="mb-5">
-                  <h2 className="text-xl font-black tracking-tight text-slate-900 font-display">
+                  <h2 className="text-xl font-black tracking-tight text-white font-display glow-gold-text">
                     Reserve Your FREE Seat
                   </h2>
-                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                  <p className="text-xs text-slate-400 mt-1 leading-relaxed">
                     Register now to confirm your physical seat at Ambedkar Academy.
                   </p>
                 </div>
@@ -1060,11 +1058,11 @@ export default function App() {
                   
                   {/* Name field */}
                   <div>
-                    <label htmlFor="fullname-input" className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">
+                    <label htmlFor="fullname-input" className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1.5">
                       Full Name *
                     </label>
                     <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
                         <User className="w-4 h-4" />
                       </span>
                       <input
@@ -1074,18 +1072,18 @@ export default function App() {
                         placeholder="Your full name"
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 rounded-xl pl-10 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition-all duration-200 font-medium"
+                        className="w-full bg-slate-950 border border-slate-800 text-white placeholder-slate-500 rounded-xl pl-10 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 transition-all duration-200 font-medium"
                       />
                     </div>
                   </div>
 
                   {/* WhatsApp Number field */}
                   <div>
-                    <label htmlFor="whatsapp-input" className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">
+                    <label htmlFor="whatsapp-input" className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1.5">
                       WhatsApp Number *
                     </label>
                     <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 text-sm font-extrabold">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500 text-sm font-extrabold">
                         +91
                       </span>
                       <input
@@ -1096,14 +1094,14 @@ export default function App() {
                         placeholder="10-digit WhatsApp number"
                         value={whatsAppNumber}
                         onChange={handleWhatsAppChange}
-                        className="w-full bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 rounded-xl pl-12 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition-all duration-200 font-medium"
+                        className="w-full bg-slate-950 border border-slate-800 text-white placeholder-slate-500 rounded-xl pl-12 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 transition-all duration-200 font-medium"
                       />
                     </div>
                   </div>
 
                   {/* Preparing For Dropdown */}
                   <div>
-                    <label htmlFor="preparing-select" className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">
+                    <label htmlFor="preparing-select" className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1.5">
                       Preparing For? *
                     </label>
                     <select
@@ -1111,19 +1109,19 @@ export default function App() {
                       required
                       value={preparingFor}
                       onChange={(e) => setPreparingFor(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition-all duration-200 cursor-pointer font-medium"
+                      className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 transition-all duration-200 cursor-pointer font-medium"
                     >
-                      <option value="">Select your exam goal</option>
-                      <option value="Group 1">Group 1</option>
-                      <option value="Group 2">Group 2</option>
-                      <option value="Group 4">Group 4</option>
-                      <option value="Beginner">Beginner / First Time</option>
+                      <option value="" className="bg-slate-900 text-slate-400">Select your exam goal</option>
+                      <option value="Group 1" className="bg-slate-900 text-white">Group 1</option>
+                      <option value="Group 2" className="bg-slate-900 text-white">Group 2</option>
+                      <option value="Group 4" className="bg-slate-900 text-white">Group 4</option>
+                      <option value="Beginner" className="bg-slate-900 text-white">Beginner / First Time</option>
                     </select>
                   </div>
 
                   {/* Current Position Dropdown */}
                   <div>
-                    <label htmlFor="position-select" className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">
+                    <label htmlFor="position-select" className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1.5">
                       Current Position *
                     </label>
                     <select
@@ -1131,19 +1129,19 @@ export default function App() {
                       required
                       value={currentPosition}
                       onChange={(e) => setCurrentPosition(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition-all duration-200 cursor-pointer font-medium"
+                      className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 transition-all duration-200 cursor-pointer font-medium"
                     >
-                      <option value="">Select your status</option>
-                      <option value="House Wife">House Wife</option>
-                      <option value="College Student">College Student</option>
-                      <option value="Working Professional">Working Professional</option>
-                      <option value="Others">Others</option>
+                      <option value="" className="bg-slate-900 text-slate-400">Select your status</option>
+                      <option value="House Wife" className="bg-slate-900 text-white">House Wife</option>
+                      <option value="College Student" className="bg-slate-900 text-white">College Student</option>
+                      <option value="Working Professional" className="bg-slate-900 text-white">Working Professional</option>
+                      <option value="Others" className="bg-slate-900 text-white">Others</option>
                     </select>
                   </div>
 
                   {/* coaching before Dropdown */}
                   <div>
-                    <label htmlFor="coaching-select" className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">
+                    <label htmlFor="coaching-select" className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1.5">
                       Attended Coaching Before? *
                     </label>
                     <select
@@ -1151,17 +1149,17 @@ export default function App() {
                       required
                       value={previousCoaching}
                       onChange={(e) => setPreviousCoaching(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition-all duration-200 cursor-pointer font-medium"
+                      className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 transition-all duration-200 cursor-pointer font-medium"
                     >
-                      <option value="">Select option</option>
-                      <option value="Yes">Yes, I Have</option>
-                      <option value="No">No, First Time</option>
+                      <option value="" className="bg-slate-900 text-slate-400">Select option</option>
+                      <option value="Yes" className="bg-slate-900 text-white">Yes, I Have</option>
+                      <option value="No" className="bg-slate-900 text-white">No, First Time</option>
                     </select>
                   </div>
 
                   {/* Form Error messages */}
                   {formError && (
-                    <div className="bg-red-50 text-red-600 text-xs font-bold p-3 rounded-xl border border-red-200 flex items-start gap-2">
+                    <div className="bg-red-950/40 text-red-400 text-xs font-bold p-3 rounded-xl border border-red-500/30 flex items-start gap-2">
                       <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
                       <span>{formError}</span>
                     </div>
@@ -1171,7 +1169,7 @@ export default function App() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-gradient-to-r from-amber-500 via-orange-500 to-orange-600 text-slate-950 font-black py-4 px-4 rounded-xl glow-orange-button transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer text-sm tracking-widest uppercase disabled:opacity-50 disabled:cursor-not-allowed animate-shake mt-2"
+                    className="w-full gold-metallic-gradient gold-metallic-hover text-slate-950 font-black py-4 px-4 rounded-xl shadow-lg transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer text-sm tracking-widest uppercase disabled:opacity-50 disabled:cursor-not-allowed animate-shake mt-2"
                   >
                     {isLoading ? (
                       <>
@@ -1188,15 +1186,15 @@ export default function App() {
                     )}
                   </button>
 
-                  <div className="flex justify-between text-[10px] font-bold text-slate-500 px-1 pt-1.5 uppercase tracking-wider">
+                  <div className="flex justify-between text-[10px] font-bold text-slate-400 px-1 pt-1.5 uppercase tracking-wider">
                     <span className="flex items-center gap-1">
-                      <Check className="w-3.5 h-3.5 text-emerald-600" /> Free Seat
+                      <Check className="w-3.5 h-3.5 text-amber-400" /> Free Seat
                     </span>
                     <span className="flex items-center gap-1">
-                      <Check className="w-3.5 h-3.5 text-emerald-600" /> Secure
+                      <Check className="w-3.5 h-3.5 text-amber-400" /> Secure
                     </span>
                     <span className="flex items-center gap-1">
-                      <Check className="w-3.5 h-3.5 text-emerald-600" /> Live Updates
+                      <Check className="w-3.5 h-3.5 text-amber-400" /> Live Updates
                     </span>
                   </div>
 
@@ -1210,12 +1208,12 @@ export default function App() {
       </section>
 
       {/* SECTION 2 – PROBLEM / PAIN POINTS */}
-      <section className="py-20 px-4 md:px-8 border-b border-slate-100 bg-slate-50/50">
+      <section className="py-20 px-4 md:px-8 border-b border-amber-500/10 bg-[#060606]">
         <div className="max-w-4xl mx-auto text-center space-y-12">
           
           <div className="space-y-3">
-            <span className="text-amber-600 font-bold uppercase text-xs tracking-widest block">Core Obstacles</span>
-            <h2 className="text-3xl md:text-4xl font-extrabold font-display text-slate-900">
+            <span className="text-amber-400 font-bold uppercase text-xs tracking-widest block">Core Obstacles</span>
+            <h2 className="text-3xl md:text-4xl font-extrabold font-display text-white">
               Are You Facing These Problems?
             </h2>
             <div className="w-16 h-1 bg-amber-500 mx-auto rounded-full"></div>
@@ -1231,23 +1229,23 @@ export default function App() {
             ].map((problem, i) => (
               <div
                 key={i}
-                className="bg-white border border-slate-200/85 rounded-2xl p-5 flex items-start gap-4 hover:border-amber-300 hover:shadow-md transition duration-200"
+                className="bg-[#0a0908] border border-amber-500/20 rounded-2xl p-5 flex items-start gap-4 hover:border-amber-400/50 hover:shadow-md transition duration-200"
               >
-                <div className="w-8 h-8 bg-amber-500/10 text-amber-600 rounded-lg flex items-center justify-center shrink-0 border border-amber-500/10">
+                <div className="w-8 h-8 bg-amber-500/10 text-amber-400 rounded-lg flex items-center justify-center shrink-0 border border-amber-500/20">
                   <AlertTriangle className="w-4.5 h-4.5" />
                 </div>
-                <p className="text-slate-700 font-medium text-sm md:text-base self-center">
+                <p className="text-slate-200 font-medium text-sm md:text-base self-center">
                   {problem}
                 </p>
               </div>
             ))}
 
             {/* Callout highlight card */}
-            <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-6 flex flex-col justify-center items-center text-center">
-              <h4 className="text-amber-800 font-black text-lg md:text-xl">
+            <div className="bg-amber-950/20 border border-amber-500/30 rounded-2xl p-6 flex flex-col justify-center items-center text-center">
+              <h4 className="text-amber-300 font-black text-lg md:text-xl">
                 If yes, this FREE workshop is for you.
               </h4>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-slate-400 mt-1">
                 Designed to provide immediate actionable blueprints.
               </p>
             </div>
@@ -1256,7 +1254,7 @@ export default function App() {
           <div className="pt-4">
             <button
               onClick={scrollToForm}
-              className="inline-flex items-center gap-2 text-slate-950 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 active:bg-amber-600 font-extrabold px-8 py-4 rounded-xl text-sm md:text-base shadow-lg transition duration-150 cursor-pointer animate-shake"
+              className="inline-flex items-center gap-2 text-slate-950 gold-metallic-gradient gold-metallic-hover font-black px-8 py-4 rounded-xl text-sm md:text-base shadow-lg transition duration-150 cursor-pointer animate-shake"
             >
               YES, I WANT TO ATTEND THE FREE WORKSHOP
             </button>
@@ -1266,12 +1264,12 @@ export default function App() {
       </section>
 
       {/* SECTION 3 – WHAT YOU WILL LEARN */}
-      <section className="py-20 px-4 md:px-8 border-b border-slate-100 bg-white">
+      <section className="py-20 px-4 md:px-8 border-b border-amber-500/10 bg-[#030303]">
         <div className="max-w-6xl mx-auto">
           
           <div className="text-center space-y-3 mb-16">
-            <span className="text-amber-600 font-bold uppercase text-xs tracking-widest block">Workshop Curriculum</span>
-            <h2 className="text-3xl md:text-4xl font-extrabold font-display text-slate-900">
+            <span className="text-amber-400 font-bold uppercase text-xs tracking-widest block">Workshop Curriculum</span>
+            <h2 className="text-3xl md:text-4xl font-extrabold font-display text-white">
               What You Will Learn in This Workshop
             </h2>
             <div className="w-16 h-1 bg-amber-500 mx-auto rounded-full"></div>
@@ -1312,20 +1310,20 @@ export default function App() {
             ].map((benefit, i) => (
               <div
                 key={i}
-                className="bg-slate-50 border border-slate-200/80 rounded-2xl p-6 hover:border-amber-400 hover:bg-white hover:shadow-md transition flex flex-col justify-between h-full relative group"
+                className="bg-[#0a0908] border border-amber-500/20 rounded-2xl p-6 hover:border-amber-400 hover:bg-[#0c0a09] hover:shadow-md transition flex flex-col justify-between h-full relative group"
               >
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] uppercase font-black tracking-widest text-amber-700 bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-500/10">
+                    <span className="text-[10px] uppercase font-black tracking-widest text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-500/20">
                       {benefit.badge}
                     </span>
-                    <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0" />
+                    <CheckCircle className="w-5 h-5 text-amber-400 shrink-0" />
                   </div>
                   <div className="space-y-2">
-                    <h3 className="text-lg font-bold text-slate-900 group-hover:text-amber-700 transition">
+                    <h3 className="text-lg font-bold text-white group-hover:text-amber-400 transition">
                       {benefit.title}
                     </h3>
-                    <p className="text-slate-600 text-sm leading-relaxed">
+                    <p className="text-slate-400 text-sm leading-relaxed">
                       {benefit.desc}
                     </p>
                   </div>
@@ -1338,15 +1336,15 @@ export default function App() {
       </section>
 
       {/* SECTION 4 – 30 MINUTES PER DAY CHALLENGE */}
-      <section className="py-20 px-4 md:px-8 border-b border-slate-100 bg-slate-50/50">
+      <section className="py-20 px-4 md:px-8 border-b border-amber-500/10 bg-[#060606]">
         <div className="max-w-6xl mx-auto">
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Poster / Visual Image side */}
             <div className="lg:col-span-5 relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 to-orange-600 rounded-3xl blur-md opacity-25"></div>
-              <div className="relative bg-white border border-slate-200/80 rounded-3xl overflow-hidden p-3 shadow-xl">
+              <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 to-yellow-600 rounded-3xl blur-md opacity-20"></div>
+              <div className="relative bg-[#0a0908] border border-amber-500/20 rounded-3xl overflow-hidden p-3 shadow-xl">
                 <img
                   src={CHALLENGE_IMAGE}
                   alt="30 Minutes Daily 3000 Questions TNPSC Challenge Poster"
@@ -1354,66 +1352,62 @@ export default function App() {
                   className="w-full h-auto object-cover rounded-2xl transition duration-500 group-hover:scale-[1.02]"
                 />
                 
-                {/* Embedded Badge overlay representing actual poster details */}
-                <div className="absolute top-6 left-6 bg-white/95 border border-amber-500/30 px-3.5 py-2 rounded-xl text-center shadow-lg backdrop-blur">
-                  <span className="block text-[10px] text-amber-600 font-black tracking-wider uppercase">Challenge Mode</span>
-                  <span className="block text-lg font-black text-slate-900 font-mono leading-tight">250 Days</span>
-                </div>
+
               </div>
             </div>
 
             {/* Content & interactive breakdown side */}
             <div className="lg:col-span-7 space-y-6">
-              <span className="text-amber-600 font-bold uppercase text-xs tracking-widest block">Signature Habit Program</span>
+              <span className="text-amber-400 font-bold uppercase text-xs tracking-widest block">Signature Habit Program</span>
               
               <div className="space-y-3">
-                <h2 className="text-3xl md:text-4xl font-extrabold font-display text-slate-900 tracking-tight">
+                <h2 className="text-3xl md:text-4xl font-extrabold font-display text-white tracking-tight">
                   30 Minutes Per Day.<br />
                   Build a Powerful TNPSC Practice Habit.
                 </h2>
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500/10 to-orange-500/10 text-amber-700 px-4 py-1.5 rounded-full border border-amber-500/20 text-xs md:text-sm font-bold">
-                  <Trophy className="w-4 h-4 text-amber-600" />
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500/10 to-yellow-500/10 text-amber-400 px-4 py-1.5 rounded-full border border-amber-500/20 text-xs md:text-sm font-bold">
+                  <Trophy className="w-4 h-4 text-amber-400" />
                   3000 QUESTIONS • 250 DAY CHALLENGE
                 </div>
-                <p className="text-slate-600 text-sm md:text-base leading-relaxed">
+                <p className="text-slate-300 text-sm md:text-base leading-relaxed">
                   Most candidates fail not because they don't study, but because they don't practice MCQ test templates. Our workshop introduces a consistent daily question-practice system to compound memory and recall accuracy.
                 </p>
               </div>
 
               {/* Step Graphic Visual Representation */}
-              <div className="bg-white border border-slate-200/80 rounded-2xl p-6 space-y-6 shadow-sm">
-                <h4 className="text-xs font-bold uppercase text-slate-500 tracking-wider">
+              <div className="bg-[#0a0908] border border-amber-500/20 rounded-2xl p-6 space-y-6 shadow-md">
+                <h4 className="text-xs font-bold uppercase text-slate-400 tracking-wider">
                   How Daily Compound Practice Builds Mastery:
                 </h4>
                 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center relative">
                   
                   {/* Step 1 */}
-                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 relative">
+                  <div className="bg-[#060606] p-4 rounded-xl border border-amber-500/10 relative">
                     <span className="absolute -top-2 -left-2 bg-amber-500 text-slate-950 font-bold font-mono text-[10px] w-5 h-5 rounded-full flex items-center justify-center">1</span>
-                    <p className="text-sm font-black text-slate-900">30 Mins</p>
-                    <p className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider mt-1">Daily Habit</p>
+                    <p className="text-sm font-black text-white">30 Mins</p>
+                    <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mt-1">Daily Habit</p>
                   </div>
 
                   {/* Step 2 */}
-                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 relative">
+                  <div className="bg-[#060606] p-4 rounded-xl border border-amber-500/10 relative">
                     <span className="absolute -top-2 -left-2 bg-amber-500 text-slate-950 font-bold font-mono text-[10px] w-5 h-5 rounded-full flex items-center justify-center">2</span>
-                    <p className="text-sm font-black text-amber-600">12 MCQs</p>
-                    <p className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider mt-1">Target Per Day</p>
+                    <p className="text-sm font-black text-amber-400">12 MCQs</p>
+                    <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mt-1">Target Per Day</p>
                   </div>
 
                   {/* Step 3 */}
-                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 relative">
+                  <div className="bg-[#060606] p-4 rounded-xl border border-amber-500/10 relative">
                     <span className="absolute -top-2 -left-2 bg-amber-500 text-slate-950 font-bold font-mono text-[10px] w-5 h-5 rounded-full flex items-center justify-center">3</span>
-                    <p className="text-sm font-black text-slate-900">250 Days</p>
-                    <p className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider mt-1">Consistency</p>
+                    <p className="text-sm font-black text-white">250 Days</p>
+                    <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mt-1">Consistency</p>
                   </div>
 
                   {/* Step 4 */}
-                  <div className="bg-slate-50 p-4 rounded-xl border border-amber-500/20 relative">
-                    <span className="absolute -top-2 -left-2 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold font-mono text-[10px] w-5 h-5 rounded-full flex items-center justify-center">4</span>
-                    <p className="text-sm font-black text-emerald-600">3,000 Questions</p>
-                    <p className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider mt-1">Full Practice</p>
+                  <div className="bg-[#060606] p-4 rounded-xl border border-amber-500/20 relative">
+                    <span className="absolute -top-2 -left-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-bold font-mono text-[10px] w-5 h-5 rounded-full flex items-center justify-center">4</span>
+                    <p className="text-sm font-black text-emerald-400">3,000 Questions</p>
+                    <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mt-1">Full Practice</p>
                   </div>
 
                 </div>
@@ -1422,7 +1416,7 @@ export default function App() {
               <div>
                 <button
                   onClick={scrollToForm}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-amber-700 border border-amber-500/30 hover:border-amber-500/60 font-bold py-3.5 px-6 rounded-xl text-sm transition duration-150 cursor-pointer shadow-sm"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#0c0a09] hover:bg-black text-amber-400 border border-amber-500/30 hover:border-amber-500/60 font-bold py-3.5 px-6 rounded-xl text-sm transition duration-150 cursor-pointer shadow-md"
                 >
                   LEARN THE STRATEGY AT THE FREE WORKSHOP
                   <ArrowRight className="w-4 h-4" />
@@ -1437,43 +1431,43 @@ export default function App() {
       </section>
 
       {/* SECTION 5 – ₹1 LAKH CASH PRIZE MODEL EXAM */}
-      <section className="py-20 px-4 md:px-8 border-b border-slate-100 bg-white">
+      <section className="py-20 px-4 md:px-8 border-b border-amber-500/10 bg-[#030303]">
         <div className="max-w-6xl mx-auto">
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Content side first for visual rhythm */}
             <div className="lg:col-span-7 space-y-6 order-2 lg:order-1">
-              <span className="text-amber-600 font-bold uppercase text-xs tracking-widest block">Flagship Competitive Test</span>
+              <span className="text-amber-400 font-bold uppercase text-xs tracking-widest block">Flagship Competitive Test</span>
               
               <div className="space-y-3">
-                <h2 className="text-3xl md:text-4xl font-extrabold font-display text-slate-900 tracking-tight">
+                <h2 className="text-3xl md:text-4xl font-extrabold font-display text-white tracking-tight">
                   ₹1,00,000 Cash Prize<br />
                   TNPSC Group 2 &amp; 4 Model Exam
                 </h2>
-                <p className="text-lg font-bold text-amber-600">
+                <p className="text-lg font-bold text-amber-400">
                   Test Your Preparation. Challenge Yourself.
                 </p>
-                <p className="text-slate-600 text-sm md:text-base leading-relaxed">
+                <p className="text-slate-300 text-sm md:text-base leading-relaxed">
                   Get complete evaluation blueprints, exam syllabus guides, and instructions on how to participate during our upcoming free workshop. Ambedkar Academy's cash prize model exam awards ₹1 Lakh in cash prizes to high achievers to recognize and support meritorious preparation.
                 </p>
               </div>
 
               {/* Transparent info highlights */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="bg-slate-50 border border-slate-200/60 p-4 rounded-xl flex gap-3">
-                  <Award className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                <div className="bg-[#0c0a09] border border-amber-500/20 p-4 rounded-xl flex gap-3">
+                  <Award className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
                   <div>
-                    <h5 className="font-bold text-sm text-slate-900">National Standard Evaluation</h5>
-                    <p className="text-xs text-slate-500">OMR based real testing environments simulate actual TNPSC state-level conditions.</p>
+                    <h5 className="font-bold text-sm text-white">National Standard Evaluation</h5>
+                    <p className="text-xs text-slate-400">OMR based real testing environments simulate actual TNPSC state-level conditions.</p>
                   </div>
                 </div>
 
-                <div className="bg-slate-50 border border-slate-200/60 p-4 rounded-xl flex gap-3">
-                  <CheckCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                <div className="bg-[#0c0a09] border border-amber-500/20 p-4 rounded-xl flex gap-3">
+                  <CheckCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
                   <div>
-                    <h5 className="font-bold text-sm text-slate-900">State Merit Rankings</h5>
-                    <p className="text-xs text-slate-500">Receive absolute percentiles and category ranking metrics compiled by senior academy assessors.</p>
+                    <h5 className="font-bold text-sm text-white">State Merit Rankings</h5>
+                    <p className="text-xs text-slate-400">Receive absolute percentiles and category ranking metrics compiled by senior academy assessors.</p>
                   </div>
                 </div>
               </div>
@@ -1481,7 +1475,7 @@ export default function App() {
               <div>
                 <button
                   onClick={scrollToForm}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-amber-700 border border-amber-500/30 hover:border-amber-500/60 font-bold py-3.5 px-6 rounded-xl text-sm transition duration-150 cursor-pointer shadow-sm"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#0c0a09] hover:bg-black text-amber-400 border border-amber-500/30 hover:border-amber-500/60 font-bold py-3.5 px-6 rounded-xl text-sm transition duration-150 cursor-pointer shadow-md"
                 >
                   GET COMPLETE DETAILS IN THE WORKSHOP
                   <ArrowRight className="w-4 h-4" />
@@ -1492,8 +1486,8 @@ export default function App() {
 
             {/* Poster / Visual Image side */}
             <div className="lg:col-span-5 relative group order-1 lg:order-2">
-              <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 to-orange-600 rounded-3xl blur-md opacity-25"></div>
-              <div className="relative bg-white border border-slate-200/80 rounded-3xl overflow-hidden p-3 shadow-xl">
+              <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 to-yellow-600 rounded-3xl blur-md opacity-20"></div>
+              <div className="relative bg-[#0a0908] border border-amber-500/20 rounded-3xl overflow-hidden p-3 shadow-xl">
                 <img
                   src={CASH_PRIZE_IMAGE}
                   alt="₹1,00,000 Cash Prize TNPSC Group 2 &amp; Group 4 Model Exam Poster"
@@ -1501,16 +1495,7 @@ export default function App() {
                   className="w-full h-auto object-cover rounded-2xl transition duration-500 group-hover:scale-[1.02]"
                 />
                 
-                {/* Floating overlay banner */}
-                <div className="absolute bottom-6 left-6 right-6 bg-white/95 border border-slate-200 p-4 rounded-xl flex items-center justify-between shadow-xl backdrop-blur">
-                  <div>
-                    <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-widest">Prize Allocation Pool</span>
-                    <span className="block text-base font-extrabold text-amber-600">₹1,00,000.00 INR</span>
-                  </div>
-                  <span className="text-[10px] font-black uppercase text-amber-700 bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-500/20">
-                    Model Exam Guide
-                  </span>
-                </div>
+
               </div>
             </div>
 
@@ -1520,12 +1505,12 @@ export default function App() {
       </section>
 
       {/* SECTION 6 – WORKSHOP BONUSES */}
-      <section className="py-20 px-4 md:px-8 border-b border-slate-100 bg-slate-50/50">
+      <section className="py-20 px-4 md:px-8 border-b border-amber-500/10 bg-[#060606]">
         <div className="max-w-6xl mx-auto">
           
           <div className="text-center space-y-3 mb-16">
-            <span className="text-amber-600 font-bold uppercase text-xs tracking-widest block">Premium Additions</span>
-            <h2 className="text-3xl md:text-4xl font-extrabold font-display text-slate-900">
+            <span className="text-amber-400 font-bold uppercase text-xs tracking-widest block">Premium Additions</span>
+            <h2 className="text-3xl md:text-4xl font-extrabold font-display text-white">
               FREE Bonuses for Workshop Participants
             </h2>
             <div className="w-16 h-1 bg-amber-500 mx-auto rounded-full"></div>
@@ -1534,23 +1519,23 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
             {/* Highlighting Bonus 1 with monetary evaluation details safely */}
-            <div className="bg-white border-2 border-amber-500/40 rounded-3xl p-6 relative shadow-xl hover:border-amber-500 transition flex flex-col justify-between h-full group">
+            <div className="bg-[#0a0908] border-2 border-amber-500/30 rounded-3xl p-6 relative shadow-xl hover:border-amber-500 transition flex flex-col justify-between h-full group">
               <span className="absolute -top-3.5 right-6 bg-amber-500 text-slate-950 text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-wider shadow">
                 Premium Bonus Value
               </span>
               
               <div className="space-y-4">
-                <span className="text-amber-600 font-extrabold text-xs uppercase tracking-wider block">Bonus 1</span>
+                <span className="text-amber-400 font-extrabold text-xs uppercase tracking-wider block">Bonus 1</span>
                 <div>
-                  <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-amber-600 transition leading-snug">
+                  <h3 className="text-xl font-extrabold text-white group-hover:text-amber-400 transition leading-snug">
                     ₹5,000 Worth "Where to Study" Material Guide
                   </h3>
-                  <p className="text-slate-600 text-sm mt-2 leading-relaxed">
+                  <p className="text-slate-400 text-sm mt-2 leading-relaxed">
                     Compiled 6th–12th Samacheer School Book syllabus references customized specifically for TNPSC Group 1, Group 2 &amp; Group 4 Exams. Saves hundreds of hours of preparation mapping.
                   </p>
                 </div>
               </div>
-              <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-amber-600">
+              <div className="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-xs font-bold text-amber-400">
                 <span>Value: ₹5,000</span>
                 <span>FREE for Attendees</span>
               </div>
@@ -1565,22 +1550,22 @@ export default function App() {
             ].map((bonus, i) => (
               <div
                 key={i}
-                className="bg-white border border-slate-200/80 rounded-3xl p-6 hover:border-amber-400 hover:shadow-md transition flex flex-col justify-between h-full group"
+                className="bg-[#0a0908] border border-amber-500/20 rounded-3xl p-6 hover:border-amber-400 hover:shadow-md transition flex flex-col justify-between h-full group"
               >
                 <div className="space-y-4">
-                  <span className="text-slate-400 font-extrabold text-xs uppercase tracking-wider block">Bonus {bonus.num}</span>
+                  <span className="text-slate-500 font-extrabold text-xs uppercase tracking-wider block">Bonus {bonus.num}</span>
                   <div>
-                    <h3 className="text-lg font-bold text-slate-900 group-hover:text-amber-600 transition">
+                    <h3 className="text-lg font-bold text-white group-hover:text-amber-400 transition">
                       {bonus.name}
                     </h3>
-                    <p className="text-slate-600 text-sm mt-2 leading-relaxed">
+                    <p className="text-slate-400 text-sm mt-2 leading-relaxed">
                       {bonus.desc}
                     </p>
                   </div>
                 </div>
-                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-500">
+                <div className="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-xs font-bold text-slate-500">
                   <span>Registration Advantage</span>
-                  <span className="text-emerald-600">FREE</span>
+                  <span className="text-emerald-400">FREE</span>
                 </div>
               </div>
             ))}
@@ -1588,21 +1573,21 @@ export default function App() {
           </div>
 
           {/* Visual highlight box */}
-          <div className="mt-12 bg-white border border-slate-200/80 rounded-2xl p-6 text-center max-w-2xl mx-auto shadow-sm">
-            <span className="text-xs text-slate-500 block uppercase font-bold tracking-widest mb-1">Exclusive Reservation Benefit</span>
-            <p className="text-slate-900 text-base font-bold">
+          <div className="mt-12 bg-[#0c0a09] border border-amber-500/20 rounded-2xl p-6 text-center max-w-2xl mx-auto shadow-md">
+            <span className="text-xs text-slate-400 block uppercase font-bold tracking-widest mb-1">Exclusive Reservation Benefit</span>
+            <p className="text-white text-base font-bold">
               All 6 Bonuses Will Be Shared with Confirmed Attendees Only!
             </p>
-            <div className="mt-4 flex items-center justify-center gap-1.5 text-xs font-black text-amber-600 uppercase tracking-widest">
+            <div className="mt-4 flex items-center justify-center gap-1.5 text-xs font-black text-amber-400 uppercase tracking-widest">
               <span>Workshop Registration Cost:</span>
-              <span className="bg-amber-500/10 px-2.5 py-1 rounded text-amber-700 border border-amber-500/20">FREE SEAT</span>
+              <span className="bg-amber-500/10 px-2.5 py-1 rounded text-amber-400 border border-amber-500/20">FREE SEAT</span>
             </div>
           </div>
 
           <div className="text-center mt-8">
             <button
               onClick={scrollToForm}
-              className="inline-flex items-center gap-2 text-slate-950 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 font-extrabold px-8 py-4 rounded-xl text-sm md:text-base shadow-lg transition duration-150 cursor-pointer animate-shake"
+              className="inline-flex items-center gap-2 gold-metallic-gradient gold-metallic-hover text-slate-950 font-black px-8 py-4 rounded-xl text-sm md:text-base shadow-lg transition duration-150 cursor-pointer animate-shake"
             >
               CLAIM MY FREE WORKSHOP SEAT
             </button>
@@ -1612,15 +1597,15 @@ export default function App() {
       </section>
 
       {/* SECTION 7 – WHY AMBEDKAR ACADEMY? */}
-      <section className="py-20 px-4 md:px-8 border-b border-slate-100 bg-white">
+      <section className="py-20 px-4 md:px-8 border-b border-amber-500/10 bg-[#030303]">
         <div className="max-w-6xl mx-auto">
           
           <div className="text-center space-y-3 mb-16">
-            <span className="text-amber-600 font-bold uppercase text-xs tracking-widest block">The Academy Difference</span>
-            <h2 className="text-3xl md:text-4xl font-extrabold font-display text-slate-900">
+            <span className="text-amber-400 font-bold uppercase text-xs tracking-widest block">The Academy Difference</span>
+            <h2 className="text-3xl md:text-4xl font-extrabold font-display text-white">
               Why Ambedkar Academy?
             </h2>
-            <p className="text-slate-600 max-w-2xl mx-auto text-sm md:text-base">
+            <p className="text-slate-300 max-w-2xl mx-auto text-sm md:text-base">
               We Don't Just Teach. We Build a Complete Preparation System.
             </p>
             <div className="w-16 h-1 bg-amber-500 mx-auto rounded-full mt-4"></div>
@@ -1639,16 +1624,16 @@ export default function App() {
             ].map((feature, i) => (
               <div
                 key={i}
-                className="bg-slate-50 border border-slate-200/80 rounded-2xl p-5 hover:border-amber-300 hover:shadow-sm transition flex items-start gap-3.5"
+                className="bg-[#0a0908] border border-amber-500/20 rounded-2xl p-5 hover:border-amber-400/50 hover:shadow-sm transition flex items-start gap-3.5"
               >
-                <div className="w-6 h-6 bg-amber-500/10 text-amber-600 rounded-full flex items-center justify-center shrink-0 border border-amber-500/10 mt-0.5">
+                <div className="w-6 h-6 bg-amber-500/10 text-amber-400 rounded-full flex items-center justify-center shrink-0 border border-amber-500/20 mt-0.5">
                   <Check className="w-4.5 h-4.5 stroke-[3]" />
                 </div>
                 <div className="space-y-1">
-                  <h4 className="font-bold text-slate-900 text-base">
+                  <h4 className="font-bold text-white text-base">
                     {feature.title}
                   </h4>
-                  <p className="text-xs text-slate-600 leading-relaxed">
+                  <p className="text-xs text-slate-400 leading-relaxed">
                     {feature.desc}
                   </p>
                 </div>
