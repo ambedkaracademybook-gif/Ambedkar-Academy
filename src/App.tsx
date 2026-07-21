@@ -283,24 +283,8 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState("");
 
-  // Auto redirect logic on thank you page
+  // Auto redirect logic on thank you page removed
   const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/Hbz9nRV7tf68brDu92kBw1?s=cl&p=a&ilr=1";
-
-  useEffect(() => {
-    if (currentPath === "/thank-you" || currentPath === "/thank-you/") {
-      const timer = setInterval(() => {
-        setRedirectCount((prev) => {
-          if (prev <= 1) {
-            clearInterval(timer);
-            window.location.href = WHATSAPP_GROUP_URL;
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-      return () => clearInterval(timer);
-    }
-  }, [currentPath]);
 
   const handleWhatsAppChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.replace(/\D/g, "").slice(0, 10);
@@ -766,7 +750,7 @@ export default function App() {
               Registration Confirmed!
             </h1>
             <p className="text-blue-300 text-sm md:text-base mb-8 max-w-lg mx-auto">
-              Thank you for registering.
+              Thank you for registering. Please join the WhatsApp group below to get your workshop updates!
             </p>
 
             {/* Event Info Card */}
@@ -798,15 +782,9 @@ export default function App() {
               </div>
             </div>
 
-            {redirectCount > 0 ? (
-              <p className="text-[11px] text-slate-400 mt-6 italic">
-                Redirecting to WhatsApp automatically in <span className="text-emerald-400 font-bold not-italic">{redirectCount}</span> seconds...
-              </p>
-            ) : (
-              <p className="text-[11px] text-slate-400 mt-6 italic">
-                If the tab didn't open, please click the button above to join.
-              </p>
-            )}
+            <p className="text-[11px] text-slate-400 mt-6 italic">
+              Click the button above to join our WhatsApp group for all workshop updates.
+            </p>
 
             <button
               onClick={() => navigateTo("/")}
@@ -1787,10 +1765,10 @@ export default function App() {
                   Guest Speaker
                 </span>
                 <h3 className="text-xl md:text-2xl font-extrabold text-white group-hover:text-amber-400 transition">
-                  Special Guest
+                  Venkatachalapathy
                 </h3>
                 <p className="text-xs font-semibold text-slate-500">
-                  Active Government Officer
+                  Deputy Secretary (Retd) Govt of India
                 </p>
                 <div className="w-10 h-0.5 bg-slate-200 mx-auto rounded-full mt-2"></div>
                 <p className="text-xs md:text-sm text-slate-600 leading-relaxed pt-2 max-w-sm">
