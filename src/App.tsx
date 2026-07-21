@@ -42,10 +42,10 @@ const provider = new GoogleAuthProvider();
 provider.addScope("https://www.googleapis.com/auth/spreadsheets");
 
 // Asset paths based on generated images
-const CHALLENGE_IMAGE = "https://raw.githubusercontent.com/ambedkaracademybook-gif/Ambedkar-Academy/main/images/Challenge.png";
-const CASH_PRIZE_IMAGE = "https://raw.githubusercontent.com/ambedkaracademybook-gif/Ambedkar-Academy/main/images/Cash%20Price.png";
-const MENTOR_IMAGE = "https://raw.githubusercontent.com/ambedkaracademybook-gif/Ambedkar-Academy/main/images/Mentor.png";
-const GUEST_IMAGE = "https://raw.githubusercontent.com/ambedkaracademybook-gif/Ambedkar-Academy/main/images/Guest.png";
+const CHALLENGE_IMAGE = "/images/Challenge.png";
+const CASH_PRIZE_IMAGE = "/images/Cash%20Price.png";
+const MENTOR_IMAGE = "/images/Mentor.png";
+const GUEST_IMAGE = "/images/Guest.png";
 
 export default function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
@@ -237,6 +237,23 @@ export default function App() {
     window.scrollTo(0, 0);
   };
 
+  const [showStickyButton, setShowStickyButton] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercentage = (scrollPosition / documentHeight) * 100;
+      if (scrollPercentage > 50) {
+        setShowStickyButton(true);
+      } else {
+        setShowStickyButton(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   // Workshop Date Setup (August 2, 2026, 11:00 AM IST)
   // IST is UTC+05:30. "2026-08-02T11:00:00+05:30"
   const TARGET_DATE = new Date("2026-08-02T11:00:00+05:30").getTime();
@@ -345,8 +362,12 @@ export default function App() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/register", {
+      // Direct submission to Google Sheets
+      const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzvl93f5Ogw7R0cH9SqwLGBgj0miUMH0-czmL7mIvTPJ--M3kGB3aVtjVfFs5d3ejBB/exec";
+      
+      const response = await fetch(GOOGLE_SHEET_URL, {
         method: "POST",
+        mode: "no-cors", // Essential for Google Apps Script Web App
         headers: {
           "Content-Type": "application/json",
         },
@@ -356,38 +377,33 @@ export default function App() {
           preparingFor,
           currentPosition,
           previousCoaching,
+          timestamp: new Date().toLocaleString(), // Changed key to 'timestamp' to match your Apps Script
         }),
       });
 
-      const data = await response.json();
-      if (response.ok && data.success) {
-        // Track Pixel Lead event if defined on window
-        if ((window as any).fbq) {
-          (window as any).fbq("track", "Lead", {
-            content_name: "TNPSC Workshop Lead",
-            value: 0.0,
-            currency: "INR",
-          });
-        }
-        // Track GA4 Lead Event
-        if ((window as any).gtag) {
-          (window as any).gtag("event", "generate_lead", {
-            event_category: "Workshop",
-            event_label: "TNPSC Blueprint 2026",
-          });
-        }
-
-        navigateTo("/thank-you/");
-      } else {
-        setFormError(data.error || "Something went wrong. Please try again.");
+      // Note: 'no-cors' mode means response.ok and response.json() 
+      // will not work as expected. We assume success if it didn't throw.
+      
+      // Track Pixel Lead event if defined on window
+      if ((window as any).fbq) {
+        (window as any).fbq("track", "Lead", {
+          content_name: "TNPSC Workshop Lead",
+          value: 0.0,
+          currency: "INR",
+        });
       }
-    } catch (err: any) {
-      console.error(err);
-      setFormError("Network error. Your registration has been saved in local simulation.");
-      // Graceful fallback for offline demo: redirect anyway
-      setTimeout(() => {
-        navigateTo("/thank-you/");
-      }, 1500);
+      // Track GA4 Lead Event
+      if ((window as any).gtag) {
+        (window as any).gtag("event", "generate_lead", {
+          event_category: "Workshop",
+          event_label: "TNPSC Blueprint 2026",
+        });
+      }
+
+      navigateTo("/thank-you/");
+    } catch (error) {
+      console.error("Form submission error:", error);
+      setFormError("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -738,15 +754,36 @@ export default function App() {
               <CheckCircle className="w-12 h-12 stroke-[1.5]" />
             </div>
 
+            {/* Next Step WhatsApp box (Moved above) */}
+            <div className="bg-slate-900/65 border border-emerald-500/20 rounded-2xl p-6 md:p-8 max-w-lg mx-auto mb-8">
+              <h2 className="text-base md:text-lg font-bold text-emerald-400 flex items-center justify-center gap-2 mb-2 font-display uppercase tracking-wide">
+                <Sparkles className="w-5 h-5 animate-pulse text-emerald-400" /> IMPORTANT NEXT STEP
+              </h2>
+              <p className="text-xs md:text-sm text-slate-300 mb-6 font-medium leading-relaxed">
+                Join our official WhatsApp group for session links and updates.
+              </p>
+
+              <a
+                href={WHATSAPP_GROUP_URL}
+                target="_blank"
+                rel="noreferrer"
+                id="join-whatsapp-btn"
+                className="w-full inline-flex items-center justify-center gap-2.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-black py-4 px-6 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition duration-200 text-sm md:text-base tracking-wide group cursor-pointer uppercase"
+              >
+                JOIN WHATSAPP GROUP
+                <ArrowRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform" />
+              </a>
+            </div>
+
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 mb-4 tracking-wider uppercase border border-amber-500/20">
               Seat Confirmed
             </span>
 
-            <h1 className="text-2xl md:text-3xl font-extrabold font-display tracking-tight text-white mb-4 glow-gold-text">
-              Your Workshop Registration Is Confirmed!
+            <h1 className="text-2xl md:text-3xl font-extrabold font-display tracking-tight text-blue-500 mb-4 glow-blue-text">
+              Registration Confirmed!
             </h1>
-            <p className="text-slate-300 text-sm md:text-base mb-8 max-w-lg mx-auto">
-              Thank you for registering for the <span className="text-amber-400 font-bold font-display">TNPSC Success Blueprint Workshop 2026</span>.
+            <p className="text-blue-300 text-sm md:text-base mb-8 max-w-lg mx-auto">
+              Thank you for registering.
             </p>
 
             {/* Event Info Card */}
@@ -778,48 +815,15 @@ export default function App() {
               </div>
             </div>
 
-            {/* Next Step WhatsApp box */}
-            <div className="bg-slate-900/65 border border-emerald-500/20 rounded-2xl p-6 md:p-8 max-w-lg mx-auto">
-              <h2 className="text-base md:text-lg font-bold text-emerald-400 flex items-center justify-center gap-2 mb-2 font-display uppercase tracking-wide">
-                <Sparkles className="w-5 h-5 animate-pulse text-emerald-400" /> IMPORTANT NEXT STEP
-              </h2>
-              <p className="text-xs md:text-sm text-slate-300 mb-6 font-medium leading-relaxed">
-                Join our official WhatsApp group to receive free preparation guides, direct session links, and live event updates.
+            {redirectCount > 0 ? (
+              <p className="text-[11px] text-slate-400 mt-6 italic">
+                Redirecting to WhatsApp automatically in <span className="text-emerald-400 font-bold not-italic">{redirectCount}</span> seconds...
               </p>
-
-              <a
-                href={WHATSAPP_GROUP_URL}
-                target="_blank"
-                rel="noreferrer"
-                id="join-whatsapp-btn"
-                className="w-full inline-flex items-center justify-center gap-2.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-black py-4 px-6 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition duration-200 text-sm md:text-base tracking-wide group cursor-pointer uppercase"
-              >
-                JOIN WHATSAPP GROUP
-                <ArrowRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform" />
-              </a>
-
-              <div className="flex justify-center flex-wrap gap-x-4 gap-y-1.5 mt-4 text-[10px] uppercase tracking-wider font-bold text-emerald-400">
-                <span className="flex items-center gap-1">
-                  <Check className="w-3.5 h-3.5 stroke-[3]" /> Study Materials
-                </span>
-                <span className="flex items-center gap-1">
-                  <Check className="w-3.5 h-3.5 stroke-[3]" /> Live Link
-                </span>
-                <span className="flex items-center gap-1">
-                  <Check className="w-3.5 h-3.5 stroke-[3]" /> Reminders
-                </span>
-              </div>
-
-              {redirectCount > 0 ? (
-                <p className="text-[11px] text-slate-400 mt-6 italic">
-                  Redirecting to WhatsApp automatically in <span className="text-emerald-400 font-bold not-italic">{redirectCount}</span> seconds...
-                </p>
-              ) : (
-                <p className="text-[11px] text-slate-400 mt-6 italic">
-                  If the tab didn't open, please click the button above to join.
-                </p>
-              )}
-            </div>
+            ) : (
+              <p className="text-[11px] text-slate-400 mt-6 italic">
+                If the tab didn't open, please click the button above to join.
+              </p>
+            )}
 
             <button
               onClick={() => navigateTo("/")}
@@ -866,9 +870,20 @@ export default function App() {
       <div className="absolute bottom-[20%] left-[-10%] w-[50%] h-[50%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-600/5 to-transparent rounded-full blur-3xl pointer-events-none"></div>
 
       {/* SECTION 1 – HERO / ABOVE THE FOLD */}
-      <section className="relative overflow-hidden pt-8 md:pt-12 pb-12 border-b border-amber-500/10 bg-gradient-to-b from-black via-[#080706] to-black">
+      {showStickyButton && (
+        <button
+          onClick={scrollToForm}
+          className="fixed bottom-6 right-6 z-[100] bg-amber-500 text-black font-black py-3 px-6 rounded-xl shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 border border-amber-400"
+        >
+          REGISTER FREE NOW
+        </button>
+      )}
+      <section className="relative overflow-hidden pt-8 md:pt-12 pb-12 border-b border-amber-500/10 min-h-[500px] flex items-center" style={{ backgroundImage: "url('https://d1cmkr5tdoeyjk.cloudfront.net/tnpsc/tnpsc_pic_web.jpg')", backgroundSize: "cover", backgroundPosition: "center" }}>
         
-        {/* 1. Deepest Layer: Rich soft glowing blurry patterns */}
+        {/* Dark overlay for readability */}
+        <div className="absolute inset-0 bg-black/70"></div>
+
+        {/* 1. Decorative Glows Layer */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
           {/* Large soft amber glow */}
           <div className="absolute -top-[10%] left-[5%] w-[45%] h-[45%] bg-amber-500/5 rounded-full blur-[100px]"></div>
@@ -880,7 +895,7 @@ export default function App() {
         </div>
 
         {/* 2. Glassmorphic Backdrop Layer: Frosted black blur to blend the colors softly */}
-        <div className="absolute inset-0 bg-black/45 backdrop-blur-[10px] pointer-events-none"></div>
+        <div className="absolute inset-0 bg-black/80 backdrop-blur-[2px] pointer-events-none"></div>
 
         {/* 3. Grid Lines & Pattern Layer */}
         <div className="absolute inset-0 pointer-events-none select-none">
@@ -1645,39 +1660,39 @@ export default function App() {
       </section>
 
       {/* SECTION 8 – WHY WE STARTED */}
-      <section className="py-20 px-4 md:px-8 border-b border-slate-100 bg-slate-50/50 relative overflow-hidden">
+      <section className="py-20 px-4 md:px-8 border-b border-amber-500/10 bg-[#060606] relative overflow-hidden">
         {/* Subtle background graphic block to create a distinct layout feeling */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-500/5 rounded-full filter blur-3xl opacity-30"></div>
         
         <div className="max-w-3xl mx-auto text-center space-y-8 relative z-10">
           <div className="space-y-3">
-            <span className="text-amber-600 font-bold uppercase text-xs tracking-widest block">Our Mission</span>
-            <h2 className="text-3xl md:text-4xl font-extrabold font-display text-slate-900">
+            <span className="text-amber-400 font-bold uppercase text-xs tracking-widest block">Our Mission</span>
+            <h2 className="text-3xl md:text-4xl font-extrabold font-display text-white">
               Why Did We Start Ambedkar Academy?
             </h2>
             <div className="w-16 h-1 bg-amber-500 mx-auto rounded-full"></div>
           </div>
 
-          <div className="bg-white border border-slate-200/80 rounded-3xl p-6 md:p-10 text-left space-y-6 shadow-md leading-relaxed">
+          <div className="bg-[#0a0908] border border-amber-500/20 rounded-3xl p-6 md:p-10 text-left space-y-6 shadow-lg leading-relaxed">
             
-            <p className="text-slate-800 font-medium text-base md:text-lg border-l-2 border-amber-500 pl-4">
+            <p className="text-slate-200 font-medium text-base md:text-lg border-l-2 border-amber-500 pl-4">
               Every year, thousands of TNPSC aspirants miss their desired government service by just a few marks. They study hard, buy materials, and attend endless video streams, yet fall short.
             </p>
 
-            <p className="text-slate-600 text-sm md:text-base">
+            <p className="text-slate-400 text-sm md:text-base">
               The missing piece is almost never the lack of hard work. Instead, many aspirants struggle without a structured study system, personalized guidance, and a method to practice consistent compound question-drills.
             </p>
 
-            <p className="text-slate-600 text-sm md:text-base">
+            <p className="text-slate-400 text-sm md:text-base">
               Ambedkar Academy was created to help TNPSC aspirants prepare with a scientific, structured system — not just attend passive lectures. We believe in providing access to premier study strategies so every aspirant has the best shot at success.
             </p>
 
-            <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+            <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
               <div>
-                <span className="block font-bold text-slate-900 text-sm">Ambedkar Academy Team</span>
-                <span className="block text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Chennai, India</span>
+                <span className="block font-bold text-white text-sm">Ambedkar Academy Team</span>
+                <span className="block text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Chennai, India</span>
               </div>
-              <div className="text-amber-600">
+              <div className="text-amber-400">
                 <HeartHandshake className="w-8 h-8 stroke-[1.5]" />
               </div>
             </div>
@@ -1688,15 +1703,15 @@ export default function App() {
       </section>
 
       {/* SECTION 9 – WHO SHOULD ATTEND? */}
-      <section className="py-20 px-4 md:px-8 border-b border-slate-100 bg-white">
+      <section className="py-20 px-4 md:px-8 border-b border-amber-500/10 bg-[#030303]">
         <div className="max-w-5xl mx-auto text-center space-y-12">
           
           <div className="space-y-3">
-            <span className="text-amber-600 font-bold uppercase text-xs tracking-widest block">Target Audience</span>
-            <h2 className="text-3xl md:text-4xl font-extrabold font-display text-slate-900">
+            <span className="text-amber-400 font-bold uppercase text-xs tracking-widest block">Target Audience</span>
+            <h2 className="text-3xl md:text-4xl font-extrabold font-display text-white">
               Is This Workshop For You?
             </h2>
-            <p className="text-slate-600 text-sm md:text-base max-w-2xl mx-auto">
+            <p className="text-slate-300 text-sm md:text-base max-w-2xl mx-auto">
               Whether you're just starting or already preparing, this workshop is designed to help you build a clearer, highly strategic preparation roadmap.
             </p>
             <div className="w-16 h-1 bg-amber-500 mx-auto rounded-full mt-4"></div>
@@ -1714,17 +1729,17 @@ export default function App() {
               return (
                 <div
                   key={i}
-                  className="bg-slate-50 border border-slate-200/60 rounded-2xl p-5 hover:border-amber-400 hover:bg-white hover:shadow-sm transition flex flex-col justify-between h-full group"
+                  className="bg-[#0a0908] border border-amber-500/20 rounded-2xl p-5 hover:border-amber-400/50 hover:bg-[#0c0a09] hover:shadow-sm transition flex flex-col justify-between h-full group"
                 >
                   <div className="space-y-4">
-                    <div className="w-9 h-9 bg-amber-500/10 text-amber-600 rounded-xl flex items-center justify-center shrink-0 border border-amber-500/10">
+                    <div className="w-9 h-9 bg-amber-500/10 text-amber-400 rounded-xl flex items-center justify-center shrink-0 border border-amber-500/20">
                       <IconComp className="w-5 h-5" />
                     </div>
                     <div className="space-y-1.5">
-                      <h4 className="font-extrabold text-slate-900 text-base group-hover:text-amber-700 transition">
+                      <h4 className="font-extrabold text-white text-base group-hover:text-amber-400 transition">
                         {audience.title}
                       </h4>
-                      <p className="text-xs text-slate-600 leading-relaxed">
+                      <p className="text-xs text-slate-400 leading-relaxed">
                         {audience.desc}
                       </p>
                     </div>
@@ -1738,12 +1753,12 @@ export default function App() {
       </section>
 
       {/* SECTION 10 – MEET YOUR SPEAKERS */}
-      <section className="py-20 px-4 md:px-8 border-b border-slate-100 bg-white">
+      <section className="py-20 px-4 md:px-8 border-b border-amber-500/10 bg-[#030303]">
         <div className="max-w-5xl mx-auto">
           
           <div className="text-center space-y-3 mb-16">
-            <span className="text-amber-600 font-bold uppercase text-xs tracking-widest block">Workshop Hosts</span>
-            <h2 className="text-3xl md:text-4xl font-extrabold font-display text-slate-900">
+            <span className="text-amber-400 font-bold uppercase text-xs tracking-widest block">Workshop Hosts</span>
+            <h2 className="text-3xl md:text-4xl font-extrabold font-display text-white">
               Meet Your Speakers
             </h2>
             <div className="w-16 h-1 bg-amber-500 mx-auto rounded-full"></div>
@@ -1752,51 +1767,51 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
             
             {/* Speaker 1: Founder */}
-            <div className="bg-slate-50 border border-slate-200/80 rounded-3xl p-6 md:p-8 space-y-6 flex flex-col items-center text-center group hover:border-amber-400 hover:bg-white hover:shadow-md transition">
+            <div className="bg-[#0a0908] border border-amber-500/20 rounded-3xl p-6 md:p-8 space-y-6 flex flex-col items-center text-center group hover:border-amber-400/50 hover:bg-[#0c0a09] hover:shadow-md transition">
               <div className="relative">
-                <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full blur opacity-25"></div>
+                <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full blur opacity-20"></div>
                 <img
                   src={MENTOR_IMAGE}
                   alt="Mohammed Rafi - Founder of Ambedkar Academy"
                   referrerPolicy="no-referrer"
-                  className="w-32 h-32 md:w-36 md:h-36 object-cover rounded-full border-2 border-slate-150 relative z-10"
+                  className="w-32 h-32 md:w-36 md:h-36 object-cover rounded-full border-2 border-slate-800 relative z-10"
                 />
               </div>
 
               <div className="space-y-2">
-                <span className="text-[10px] font-black uppercase text-amber-700 bg-amber-500/10 px-2.5 py-1 rounded-md tracking-wider">
+                <span className="text-[10px] font-black uppercase text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md tracking-wider">
                   Academy Director
                 </span>
-                <h3 className="text-xl md:text-2xl font-extrabold text-slate-900 group-hover:text-amber-700 transition">
+                <h3 className="text-xl md:text-2xl font-extrabold text-white group-hover:text-amber-400 transition">
                   Mohammed Rafi
                 </h3>
-                <p className="text-xs font-semibold text-slate-500">
+                <p className="text-xs font-semibold text-slate-400">
                   Founder – Ambedkar Academy, Chennai
                 </p>
-                <div className="w-10 h-0.5 bg-slate-200 mx-auto rounded-full mt-2"></div>
-                <p className="text-xs md:text-sm text-slate-600 leading-relaxed pt-2 max-w-sm">
+                <div className="w-10 h-0.5 bg-slate-800 mx-auto rounded-full mt-2"></div>
+                <p className="text-xs md:text-sm text-slate-400 leading-relaxed pt-2 max-w-sm">
                   Dedicated to building a scientific preparation ecosystem for TNPSC aspirants through classroom coaching, mentorship schedules, testing tools, and real state-level model papers.
                 </p>
               </div>
             </div>
 
             {/* Speaker 2: Special Guest */}
-            <div className="bg-slate-50 border border-slate-200/80 rounded-3xl p-6 md:p-8 space-y-6 flex flex-col items-center text-center group hover:border-amber-400 hover:bg-white hover:shadow-md transition">
+            <div className="bg-[#0a0908] border border-amber-500/20 rounded-3xl p-6 md:p-8 space-y-6 flex flex-col items-center text-center group hover:border-amber-400/50 hover:bg-[#0c0a09] hover:shadow-md transition">
               <div className="relative">
-                <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full blur opacity-25"></div>
+                <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full blur opacity-20"></div>
                 <img
                   src={GUEST_IMAGE}
                   alt="Special Guest - Active Government Officer"
                   referrerPolicy="no-referrer"
-                  className="w-32 h-32 md:w-36 md:h-36 object-cover rounded-full border-2 border-slate-150 relative z-10"
+                  className="w-32 h-32 md:w-36 md:h-36 object-cover rounded-full border-2 border-slate-800 relative z-10"
                 />
               </div>
 
               <div className="space-y-2">
-                <span className="text-[10px] font-black uppercase text-amber-700 bg-amber-500/10 px-2.5 py-1 rounded-md tracking-wider">
+                <span className="text-[10px] font-black uppercase text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md tracking-wider">
                   Guest Speaker
                 </span>
-                <h3 className="text-xl md:text-2xl font-extrabold text-slate-900 group-hover:text-amber-700 transition">
+                <h3 className="text-xl md:text-2xl font-extrabold text-white group-hover:text-amber-400 transition">
                   Special Guest
                 </h3>
                 <p className="text-xs font-semibold text-slate-500">
@@ -1815,16 +1830,16 @@ export default function App() {
       </section>
 
       {/* SECTION: 20 AUTO-SCROLLING ENGLISH TESTIMONIALS */}
-      <section id="tamil-testimonials-section" className="py-20 bg-slate-50 border-t border-b border-slate-200/50 relative overflow-hidden text-left">
+      <section id="tamil-testimonials-section" className="py-20 bg-[#030303] border-t border-b border-amber-500/10 relative overflow-hidden text-left">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-amber-500/5 via-transparent to-transparent pointer-events-none"></div>
         
         <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10 mb-8">
           <div className="space-y-3 text-left">
-            <span className="text-amber-600 font-extrabold uppercase text-xs tracking-widest block">Aspirants Feedback • மாணவர் கருத்துக்கள்</span>
-            <h2 className="text-3xl md:text-4xl font-black font-display text-slate-900 tracking-tight">
+            <span className="text-amber-400 font-extrabold uppercase text-xs tracking-widest block">Aspirants Feedback • மாணவர் கருத்துக்கள்</span>
+            <h2 className="text-3xl md:text-4xl font-black font-display text-white tracking-tight">
               Aspirants Success Stories (20 Testimonials)
             </h2>
-            <p className="text-slate-600 text-sm md:text-base max-w-2xl">
+            <p className="text-slate-400 text-sm md:text-base max-w-2xl">
               Real feedback and experiences from 20 TNPSC aspirants who participated and succeeded with Ambedkar Academy's free guidance workshops.
             </p>
           </div>
@@ -1838,33 +1853,33 @@ export default function App() {
               {testimonials.map((t) => (
                 <div
                   key={`scroll-row-1-${t.id}`}
-                  className="w-[340px] bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-amber-400/60 transition duration-200 flex flex-col justify-between whitespace-normal relative group/card"
+                  className="w-[340px] bg-[#0a0908] border border-amber-500/20 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-amber-400/60 transition duration-200 flex flex-col justify-between whitespace-normal relative group/card"
                 >
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-500 rounded-t-2xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-t-2xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"></div>
                   
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div className="flex gap-0.5">
                         {[...Array(t.rating)].map((_, i) => (
-                          <Star key={i} className="w-4 h-4 fill-amber-500 text-amber-500" />
+                          <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                         ))}
                       </div>
-                      <span className="text-amber-200/80 font-serif text-4xl select-none leading-none -mt-2">“</span>
+                      <span className="text-amber-500/40 font-serif text-4xl select-none leading-none -mt-2">“</span>
                     </div>
 
-                    <p className="text-slate-700 text-sm font-medium leading-relaxed italic h-[110px] overflow-y-auto">
+                    <p className="text-slate-300 text-sm font-medium leading-relaxed italic h-[110px] overflow-y-auto">
                       {t.feedback}
                     </p>
                   </div>
 
-                  <div className="pt-4 mt-6 border-t border-slate-100 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20 flex items-center justify-center font-extrabold text-amber-700 text-sm">
+                  <div className="pt-4 mt-6 border-t border-slate-800 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500/10 to-yellow-500/10 border border-amber-500/20 flex items-center justify-center font-extrabold text-amber-400 text-sm">
                       {t.name.charAt(0)}
                     </div>
                     <div>
-                      <h4 className="font-extrabold text-slate-900 text-sm flex items-center gap-1.5">
+                      <h4 className="font-extrabold text-white text-sm flex items-center gap-1.5">
                         {t.name}
-                        <span className="text-[10px] bg-amber-500/10 text-amber-700 px-1.5 py-0.5 rounded-md font-semibold">
+                        <span className="text-[10px] bg-amber-500/10 text-amber-400 px-1.5 py-0.5 rounded-md font-semibold">
                           {t.location}
                         </span>
                       </h4>
@@ -1880,33 +1895,33 @@ export default function App() {
               {testimonials.map((t) => (
                 <div
                   key={`scroll-row-2-${t.id}`}
-                  className="w-[340px] bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-amber-400/60 transition duration-200 flex flex-col justify-between whitespace-normal relative group/card"
+                  className="w-[340px] bg-[#0a0908] border border-amber-500/20 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-amber-400/60 transition duration-200 flex flex-col justify-between whitespace-normal relative group/card"
                 >
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-500 rounded-t-2xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-t-2xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"></div>
                   
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div className="flex gap-0.5">
                         {[...Array(t.rating)].map((_, i) => (
-                          <Star key={i} className="w-4 h-4 fill-amber-500 text-amber-500" />
+                          <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                         ))}
                       </div>
-                      <span className="text-amber-200/80 font-serif text-4xl select-none leading-none -mt-2">“</span>
+                      <span className="text-amber-500/40 font-serif text-4xl select-none leading-none -mt-2">“</span>
                     </div>
 
-                    <p className="text-slate-700 text-sm font-medium leading-relaxed italic h-[110px] overflow-y-auto">
+                    <p className="text-slate-300 text-sm font-medium leading-relaxed italic h-[110px] overflow-y-auto">
                       {t.feedback}
                     </p>
                   </div>
 
-                  <div className="pt-4 mt-6 border-t border-slate-100 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20 flex items-center justify-center font-extrabold text-amber-700 text-sm">
+                  <div className="pt-4 mt-6 border-t border-slate-800 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500/10 to-yellow-500/10 border border-amber-500/20 flex items-center justify-center font-extrabold text-amber-400 text-sm">
                       {t.name.charAt(0)}
                     </div>
                     <div>
-                      <h4 className="font-extrabold text-slate-900 text-sm flex items-center gap-1.5">
+                      <h4 className="font-extrabold text-white text-sm flex items-center gap-1.5">
                         {t.name}
-                        <span className="text-[10px] bg-amber-500/10 text-amber-700 px-1.5 py-0.5 rounded-md font-semibold">
+                        <span className="text-[10px] bg-amber-500/10 text-amber-400 px-1.5 py-0.5 rounded-md font-semibold">
                           {t.location}
                         </span>
                       </h4>
@@ -1920,7 +1935,7 @@ export default function App() {
         </div>
 
         {/* Quick instructions indicator for hovering */}
-        <div className="flex items-center justify-center gap-2 mt-4 text-[11px] text-slate-400 font-bold uppercase tracking-wider">
+        <div className="flex items-center justify-center gap-2 mt-4 text-[11px] text-slate-500 font-bold uppercase tracking-wider">
           <span>Hover over card to stop scrolling and read</span>
           <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
           <span>20 Success Stories</span>
@@ -1928,47 +1943,47 @@ export default function App() {
       </section>
 
       {/* SECTION 11 – FINAL URGENCY CTA */}
-      <section className="py-24 px-4 md:px-8 bg-slate-50 border-t border-slate-100 relative overflow-hidden">
+      <section className="py-24 px-4 md:px-8 bg-[#030303] border-t border-amber-500/10 relative overflow-hidden">
         
         {/* Abstract design elements to create premium atmosphere */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_var(--tw-gradient-stops))] from-amber-50/20 via-slate-50/50 to-slate-50 opacity-50"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_var(--tw-gradient-stops))] from-amber-500/5 via-transparent to-transparent opacity-50"></div>
         
         <div className="max-w-4xl mx-auto text-center space-y-8 relative z-10">
           
-          <div className="inline-flex items-center gap-1.5 bg-amber-500/10 text-amber-700 px-3.5 py-1 rounded-full border border-amber-500/20 text-xs font-black uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 bg-amber-500/10 text-amber-400 px-3.5 py-1 rounded-full border border-amber-500/20 text-xs font-black uppercase tracking-wider">
             LIMITED SEATS AVAILABLE
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-4xl md:text-5xl font-black font-display tracking-tight text-slate-900 leading-tight">
+            <h2 className="text-4xl md:text-5xl font-black font-display tracking-tight text-white leading-tight">
               Ready to Build Your<br />
               TNPSC Success Blueprint?
             </h2>
-            <p className="text-slate-600 text-base md:text-lg max-w-2xl mx-auto">
-              This interactive strategy workshop is completely <span className="text-amber-700 font-bold">FREE</span>. Seats are allotted strictly on a first-come, first-served basis due to venue capacity restrictions.
+            <p className="text-slate-400 text-base md:text-lg max-w-2xl mx-auto">
+              This interactive strategy workshop is completely <span className="text-amber-400 font-bold">FREE</span>. Seats are allotted strictly on a first-come, first-served basis due to venue capacity restrictions.
             </p>
           </div>
 
           {/* Clean metadata badge row */}
-          <div className="bg-white border border-slate-200/80 p-6 rounded-2xl max-w-xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 text-center shadow-md">
+          <div className="bg-[#0a0908] border border-amber-500/20 p-6 rounded-2xl max-w-xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 text-center shadow-lg">
             <div className="space-y-1">
               <span className="block text-[10px] text-slate-500 uppercase tracking-wider font-bold">Date</span>
-              <span className="block text-sm font-bold text-slate-900">August 2, 2026</span>
+              <span className="block text-sm font-bold text-white">August 2, 2026</span>
             </div>
-            <div className="space-y-1 border-t md:border-t-0 md:border-x border-slate-150 py-3 md:py-0">
+            <div className="space-y-1 border-t md:border-t-0 md:border-x border-slate-800 py-3 md:py-0">
               <span className="block text-[10px] text-slate-500 uppercase tracking-wider font-bold">Time</span>
-              <span className="block text-sm font-bold text-amber-600">11:00 AM – 1:00 PM</span>
+              <span className="block text-sm font-bold text-amber-400">11:00 AM – 1:00 PM</span>
             </div>
             <div className="space-y-1">
               <span className="block text-[10px] text-slate-500 uppercase tracking-wider font-bold">Venue</span>
-              <span className="block text-sm font-bold text-slate-900">T. Nagar, Chennai</span>
+              <span className="block text-sm font-bold text-white">T. Nagar, Chennai</span>
             </div>
           </div>
 
           <div className="pt-4">
             <button
               onClick={scrollToForm}
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black py-4 px-10 rounded-xl text-base tracking-wide shadow-xl active:scale-98 transition duration-150 cursor-pointer animate-shake"
+              className="inline-flex items-center gap-2 gold-metallic-gradient gold-metallic-hover text-slate-950 font-black py-4 px-10 rounded-xl text-base tracking-wide shadow-xl active:scale-98 transition duration-150 cursor-pointer animate-shake"
             >
               REGISTER FREE NOW
               <ArrowRight className="w-5 h-5" />
@@ -1979,19 +1994,19 @@ export default function App() {
       </section>
 
       {/* FOOTER */}
-      <footer className="py-12 bg-slate-50 border-t border-slate-100 text-slate-500 text-xs px-4 text-center">
+      <footer className="py-12 bg-[#060606] border-t border-amber-500/10 text-slate-400 text-xs px-4 text-center">
         <div className="max-w-6xl mx-auto space-y-4">
-          <div className="flex justify-center items-center gap-2 text-slate-600 font-bold text-sm tracking-wider uppercase">
+          <div className="flex justify-center items-center gap-2 text-white font-bold text-sm tracking-wider uppercase">
             <span>Ambedkar Academy</span>
           </div>
           <p className="max-w-md mx-auto text-slate-500">
             T. Nagar, Chennai, Tamil Nadu, India.
           </p>
-          <div className="w-12 h-px bg-slate-200 mx-auto"></div>
+          <div className="w-12 h-px bg-slate-800 mx-auto"></div>
           <p className="text-slate-500">
             © 2026 Ambedkar Academy. All rights reserved.
           </p>
-          <p className="text-[10px] text-slate-400 max-w-lg mx-auto">
+          <p className="text-[10px] text-slate-600 max-w-lg mx-auto">
             Disclaimers: This workshop is for educational blueprint guidance. Participation in model tests is voluntary. Trademarks and syllabus terms reference official TNPSC criteria.
           </p>
         </div>
