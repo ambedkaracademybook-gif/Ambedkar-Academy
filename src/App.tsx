@@ -237,23 +237,6 @@ export default function App() {
     window.scrollTo(0, 0);
   };
 
-  const [showStickyButton, setShowStickyButton] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const scrollPercentage = (scrollPosition / documentHeight) * 100;
-      if (scrollPercentage > 50) {
-        setShowStickyButton(true);
-      } else {
-        setShowStickyButton(false);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   // Workshop Date Setup (August 2, 2026, 11:00 AM IST)
   // IST is UTC+05:30. "2026-08-02T11:00:00+05:30"
   const TARGET_DATE = new Date("2026-08-02T11:00:00+05:30").getTime();
@@ -870,14 +853,6 @@ export default function App() {
       <div className="absolute bottom-[20%] left-[-10%] w-[50%] h-[50%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-600/5 to-transparent rounded-full blur-3xl pointer-events-none"></div>
 
       {/* SECTION 1 – HERO / ABOVE THE FOLD */}
-      {showStickyButton && (
-        <button
-          onClick={scrollToForm}
-          className="fixed bottom-6 right-6 z-[100] bg-amber-500 text-black font-black py-3 px-6 rounded-xl shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 border border-amber-400"
-        >
-          REGISTER FREE NOW
-        </button>
-      )}
       <section className="relative overflow-hidden pt-8 md:pt-12 pb-12 border-b border-amber-500/10 min-h-[500px] flex items-center" style={{ backgroundImage: "url('https://d1cmkr5tdoeyjk.cloudfront.net/tnpsc/tnpsc_pic_web.jpg')", backgroundSize: "cover", backgroundPosition: "center" }}>
         
         {/* Dark overlay for readability */}
