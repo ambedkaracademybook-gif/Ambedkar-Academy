@@ -278,6 +278,7 @@ export default function App() {
   const [preparingFor, setPreparingFor] = useState("");
   const [currentPosition, setCurrentPosition] = useState("");
   const [previousCoaching, setPreviousCoaching] = useState("");
+  const [location, setLocation] = useState("");
 
   // Form state
   const [isLoading, setIsLoading] = useState(false);
@@ -325,12 +326,16 @@ export default function App() {
       setFormError("Please select if you have attended coaching before.");
       return;
     }
+    if (!location.trim()) {
+      setFormError("Please enter your Location.");
+      return;
+    }
 
     setIsLoading(true);
 
     try {
       // Direct submission to Google Sheets
-      const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzvl93f5Ogw7R0cH9SqwLGBgj0miUMH0-czmL7mIvTPJ--M3kGB3aVtjVfFs5d3ejBB/exec";
+      const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwHtzhKIw39nAcutHK8KYRn0Igl1ZR3hPpxSQlYmFbgRqqSSZ8wgkPJ-2ab7pWVrTz3/exec";
       
       const response = await fetch(GOOGLE_SHEET_URL, {
         method: "POST",
@@ -344,6 +349,7 @@ export default function App() {
           preparingFor,
           currentPosition,
           previousCoaching,
+          location,
           timestamp: new Date().toLocaleString(), // Changed key to 'timestamp' to match your Apps Script
         }),
       });
@@ -1122,6 +1128,25 @@ export default function App() {
                       <option value="" className="bg-slate-900 text-slate-400">Select option</option>
                       <option value="Yes" className="bg-slate-900 text-white">Yes, I Have</option>
                       <option value="No" className="bg-slate-900 text-white">No, First Time</option>
+                    </select>
+                  </div>
+
+                  {/* Location field */}
+                  <div>
+                    <label htmlFor="location-select" className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1.5">
+                      Your Location *
+                    </label>
+                    <select
+                      id="location-select"
+                      required
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 transition-all duration-200 cursor-pointer font-medium"
+                    >
+                      <option value="" className="bg-slate-900 text-slate-400">Select your district</option>
+                      {["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Tirunelveli", "Erode", "Vellore", "Thanjavur", "Dindigul", "Nagapattinam", "Kanchipuram", "Cuddalore", "Thoothukudi", "Tiruvannamalai", "Virudhunagar", "Sivagangai", "Pudukkottai", "Dharmapuri", "Namakkal", "Nilgiris", "Karur", "Perambalur", "Ariyalur", "Krishnagiri", "Theni", "Tiruvarur", "Ramanathapuram", "Tirupur", "Kallakurichi", "Tenkasi", "Chengalpattu", "Ranipet", "Tirupattur", "Mayiladuthurai"].map((district) => (
+                        <option key={district} value={district} className="bg-slate-900 text-white">{district}</option>
+                      ))}
                     </select>
                   </div>
 
