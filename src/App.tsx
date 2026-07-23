@@ -303,6 +303,15 @@ export default function App() {
   // Form submit handler
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) return; // Prevent double clicks
+    
+    // Check for duplicate
+    const submittedNumbers = JSON.parse(localStorage.getItem("submittedNumbers") || "[]");
+    if (submittedNumbers.includes(whatsAppNumber)) {
+        setFormError("This WhatsApp number has already been registered.");
+        return;
+    }
+
     setFormError("");
 
     // Validate
@@ -339,7 +348,7 @@ export default function App() {
       
       const response = await fetch(GOOGLE_SHEET_URL, {
         method: "POST",
-        mode: "no-cors", // Essential for Google Apps Script Web App
+        mode: "no-cors", // Reverted to no-cors
         headers: {
           "Content-Type": "application/json",
         },
@@ -350,12 +359,16 @@ export default function App() {
           currentPosition,
           previousCoaching,
           location,
-          timestamp: new Date().toLocaleString(), // Changed key to 'timestamp' to match your Apps Script
+          timestamp: new Date().toLocaleString(),
         }),
       });
 
-      // Note: 'no-cors' mode means response.ok and response.json() 
-      // will not work as expected. We assume success if it didn't throw.
+      // Since we are using no-cors, we can't check response.json().
+      // Assuming success if fetch didn't throw.
+      // Store in localStorage to prevent duplicate submissions from this device
+      const submittedNumbers = JSON.parse(localStorage.getItem("submittedNumbers") || "[]");
+      submittedNumbers.push(whatsAppNumber);
+      localStorage.setItem("submittedNumbers", JSON.stringify(submittedNumbers));
       
       // Track Pixel Lead event if defined on window
       if ((window as any).fbq) {
