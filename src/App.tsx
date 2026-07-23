@@ -285,7 +285,7 @@ export default function App() {
   const [formError, setFormError] = useState("");
 
   // Auto redirect logic on thank you page removed
-  const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/Hbz9nRV7tf68brDu92kBw1?s=cl&p=a&ilr=1";
+  const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/LaK9UODGNHOJWF6JnMkPJh?s=cl&p=a&ilr=1";
 
   const handleWhatsAppChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.replace(/\D/g, "").slice(0, 10);
