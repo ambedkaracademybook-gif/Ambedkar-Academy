@@ -1157,7 +1157,7 @@ export default function App() {
                       className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 transition-all duration-200 cursor-pointer font-medium"
                     >
                       <option value="" className="bg-slate-900 text-slate-400">Select your district</option>
-                      {["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Tirunelveli", "Erode", "Vellore", "Thanjavur", "Dindigul", "Nagapattinam", "Kanchipuram", "Cuddalore", "Thoothukudi", "Tiruvannamalai", "Virudhunagar", "Sivagangai", "Pudukkottai", "Dharmapuri", "Namakkal", "Nilgiris", "Karur", "Perambalur", "Ariyalur", "Krishnagiri", "Theni", "Tiruvarur", "Ramanathapuram", "Tirupur", "Kallakurichi", "Tenkasi", "Chengalpattu", "Ranipet", "Tirupattur", "Mayiladuthurai"].map((district) => (
+                      {["Ariyalur", "Chengalpattu", "Chennai", "Coimbatore", "Cuddalore", "Dharmapuri", "Dindigul", "Erode", "Kallakurichi", "Kancheepuram", "Kanniyakumari", "Karur", "Krishnagiri", "Madurai", "Mayiladuthurai", "Nagapattinam", "Namakkal", "Nilgiris", "Perambalur", "Pudukkottai", "Ramanathapuram", "Ranipet", "Salem", "Sivaganga", "Tenkasi", "Thanjavur", "Theni", "Tirupattur", "Tiruchirappalli (Trichy)", "Tirunelveli", "Tiruppur", "Tiruvallur", "Tiruvannamalai", "Tiruvarur", "Thoothukudi (Tuticorin)", "Vellore", "Viluppuram", "Virudhunagar"].map((district) => (
                         <option key={district} value={district} className="bg-slate-900 text-white">{district}</option>
                       ))}
                     </select>
