@@ -363,6 +363,23 @@ export default function App() {
         }),
       });
 
+      // Submission to CRM Webhook
+      const CRM_WEBHOOK_URL = "https://us-central1-dealclosure-crm.cloudfunctions.net/dealConverterCrmWebhook?webhookId=4nyyEdcYaMzfxRAzlY88";
+      await fetch(CRM_WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contact_name: fullName,
+          mobile: whatsAppNumber,
+          preparing_for: preparingFor,
+          current_position: currentPosition,
+          attended_coaching_before: previousCoaching,
+          your_location: location,
+        }),
+      });
+
       // Since we are using no-cors, we can't check response.json().
       // Assuming success if fetch didn't throw.
       // Store in localStorage to prevent duplicate submissions from this device
