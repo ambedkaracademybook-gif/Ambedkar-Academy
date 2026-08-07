@@ -18,6 +18,7 @@ import {
   Phone,
   Sparkles,
   ChevronRight,
+  ChevronLeft,
   ShieldCheck,
   Star,
   Check,
@@ -237,9 +238,9 @@ export default function App() {
     window.scrollTo(0, 0);
   };
 
-  // Workshop Date Setup (August 2, 2026, 11:00 AM IST)
-  // IST is UTC+05:30. "2026-08-02T11:00:00+05:30"
-  const TARGET_DATE = new Date("2026-08-02T11:00:00+05:30").getTime();
+  // Workshop Date Setup (August 26, 2026, 11:00 AM IST)
+  // IST is UTC+05:30. "2026-08-26T11:00:00+05:30"
+  const TARGET_DATE = new Date("2026-08-26T11:00:00+05:30").getTime();
 
   // Countdown timer state
   const [timeLeft, setTimeLeft] = useState({
@@ -283,6 +284,13 @@ export default function App() {
   // Form state
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState("");
+
+  const galleryRef = useRef<HTMLDivElement>(null);
+  const scrollGallery = (direction: number) => {
+    if (galleryRef.current) {
+      galleryRef.current.scrollBy({ left: direction, behavior: 'smooth' });
+    }
+  };
 
   // Auto redirect logic on thank you page removed
   const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/LaK9UODGNHOJWF6JnMkPJh?s=cl&p=a&ilr=1";
@@ -798,7 +806,7 @@ export default function App() {
                 <Calendar className="w-5 h-5 text-amber-400 mt-0.5 shrink-0" />
                 <div>
                   <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Date</p>
-                  <p className="text-sm font-bold text-white">August 2, 2026 (Sunday)</p>
+                  <p className="text-sm font-bold text-white">August 26, 2026 (Sunday)</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -993,7 +1001,7 @@ export default function App() {
                 {/* DATE */}
                 <div className="bg-[#0c0a09]/90 border border-amber-500/10 p-3.5 rounded-xl flex flex-col justify-between shadow-md">
                   <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest block mb-1">DATE</span>
-                  <span className="text-sm font-extrabold text-white leading-tight">August 2, 2026</span>
+                  <span className="text-sm font-extrabold text-white leading-tight">August 26, 2026</span>
                   <span className="text-[10px] text-slate-400 font-semibold mt-0.5">(Sunday)</span>
                 </div>
 
@@ -1227,6 +1235,71 @@ export default function App() {
 
           </div>
 
+        </div>
+      </section>
+
+      {/* SECTION 2.4 - WORKSHOPS GALLERY */}
+      <section className="py-20 px-4 bg-[#060606] border-b border-amber-500/10">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-between mb-12">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white">Our Workshops</h2>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => scrollGallery(-300)}
+                className="p-3 rounded-full bg-slate-900 border border-amber-500/20 text-white hover:bg-amber-500/10 transition"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <button 
+                onClick={() => scrollGallery(300)}
+                className="p-3 rounded-full bg-slate-900 border border-amber-500/20 text-white hover:bg-amber-500/10 transition"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            </div>
+          </div>
+          
+          <div 
+            ref={galleryRef}
+            className="flex overflow-x-auto gap-6 pb-8 snap-x scroll-smooth no-scrollbar"
+          >
+            {["Students (1).jpeg", "Students (2).jpeg", "Students (5).jpeg", "Students (6).jpeg"].map((img, i) => (
+              <img 
+                key={i} 
+                src={`/images/${img}`} 
+                alt={`Workshop ${i + 1}`} 
+                className="min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] object-cover rounded-2xl snap-start border border-amber-500/20"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 2.5 - TESTIMONIALS */}
+      <section className="py-20 px-4 bg-[#0a0a0a] border-b border-amber-500/10">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">Student Success Stories</h2>
+            <div className="w-16 h-1 bg-amber-500 mx-auto rounded-full"></div>
+          </div>
+          
+          <div className="flex overflow-x-auto gap-6 pb-8 snap-x">
+            {testimonials.map((t) => (
+              <div key={t.id} className="min-w-[300px] md:min-w-[350px] bg-[#121212] p-6 rounded-2xl border border-amber-500/10 snap-start flex flex-col">
+                <div className="flex items-center gap-1 mb-4">
+                  {[...Array(t.rating)].map((_, i) => <Star key={i} className="w-4 h-4 fill-amber-500 text-amber-500" />)}
+                </div>
+                <p className="text-slate-300 text-sm mb-6 flex-grow italic">"{t.feedback}"</p>
+                <div className="flex items-center gap-4 mt-auto">
+                  {t.image && <img src={t.image} alt={t.name} className="w-12 h-12 rounded-full object-cover" />}
+                  <div>
+                    <p className="text-white font-bold">{t.name}</p>
+                    <p className="text-amber-500 text-xs">{t.role} • {t.location}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -1837,18 +1910,18 @@ export default function App() {
         </div>
       </section>
 
-      {/* SECTION: 20 AUTO-SCROLLING ENGLISH TESTIMONIALS */}
-      <section id="tamil-testimonials-section" className="py-20 bg-[#030303] border-t border-b border-amber-500/10 relative overflow-hidden text-left">
+      {/* SECTION: AUTO-SCROLLING ENGLISH TESTIMONIALS */}
+      <section id="tamil-testimonials-section" className="py-20 bg-[#030303] border-t border-b border-amber-500/10 relative text-left">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-amber-500/5 via-transparent to-transparent pointer-events-none"></div>
         
         <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10 mb-8">
           <div className="space-y-3 text-left">
             <span className="text-amber-400 font-extrabold uppercase text-xs tracking-widest block">Aspirants Feedback • மாணவர் கருத்துக்கள்</span>
             <h2 className="text-3xl md:text-4xl font-black font-display text-white tracking-tight">
-              Aspirants Success Stories (20 Testimonials)
+              Aspirants Success Stories
             </h2>
             <p className="text-slate-400 text-sm md:text-base max-w-2xl">
-              Real feedback and experiences from 20 TNPSC aspirants who participated and succeeded with Ambedkar Academy's free guidance workshops.
+              Real feedback and experiences from TNPSC aspirants who participated and succeeded with Ambedkar Academy's free guidance workshops.
             </p>
           </div>
         </div>
@@ -1946,7 +2019,7 @@ export default function App() {
         <div className="flex items-center justify-center gap-2 mt-4 text-[11px] text-slate-500 font-bold uppercase tracking-wider">
           <span>Hover over card to stop scrolling and read</span>
           <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-          <span>20 Success Stories</span>
+          <span>Aspirants' Success Stories</span>
         </div>
       </section>
 
@@ -1976,7 +2049,7 @@ export default function App() {
           <div className="bg-[#0a0908] border border-amber-500/20 p-6 rounded-2xl max-w-xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 text-center shadow-lg">
             <div className="space-y-1">
               <span className="block text-[10px] text-slate-500 uppercase tracking-wider font-bold">Date</span>
-              <span className="block text-sm font-bold text-white">August 2, 2026</span>
+              <span className="block text-sm font-bold text-white">August 26, 2026</span>
             </div>
             <div className="space-y-1 border-t md:border-t-0 md:border-x border-slate-800 py-3 md:py-0">
               <span className="block text-[10px] text-slate-500 uppercase tracking-wider font-bold">Time</span>
@@ -2030,7 +2103,7 @@ export default function App() {
             <p className="text-sm font-bold text-slate-900">
               TNPSC SUCCESS BLUEPRINT WORKSHOP 2026
               <span className="text-amber-500 font-extrabold mx-2">•</span>
-              <span className="text-slate-600 font-semibold">August 2 | 11 AM – 1 PM | </span>
+              <span className="text-slate-600 font-semibold">August 26 | 11 AM – 1 PM | </span>
               <span className="text-amber-700 font-bold uppercase bg-amber-500/10 px-1.5 py-0.5 rounded text-[10px] border border-amber-500/20 ml-1">FREE</span>
             </p>
           </div>

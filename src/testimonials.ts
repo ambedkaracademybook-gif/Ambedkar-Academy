@@ -5,6 +5,7 @@ export interface Testimonial {
   role: string;
   feedback: string;
   rating: number;
+  image?: string;
 }
 
 export const testimonials: Testimonial[] = [
