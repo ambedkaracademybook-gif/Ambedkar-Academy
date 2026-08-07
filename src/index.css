@@ -95,22 +95,13 @@ html {
   background: rgba(212, 175, 55, 0.55);
 }
 
-/* Custom Scrollbar for Sleek Interface */
-::-webkit-scrollbar {
-  width: 8px;
+/* Hide scrollbar for sections that need it */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
-
-::-webkit-scrollbar-track {
-  background: #f8fafc;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 /* Scrolling Marquee Animation */

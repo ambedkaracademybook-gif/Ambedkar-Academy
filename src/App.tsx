@@ -284,15 +284,38 @@ export default function App() {
   // Form state
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState("");
+  const [isWorkshopHovered, setIsWorkshopHovered] = useState(false);
+  const [isTestimonial1Hovered, setIsTestimonial1Hovered] = useState(false);
+  const [isTestimonial2Hovered, setIsTestimonial2Hovered] = useState(false);
 
-  const galleryRef = useRef<HTMLDivElement>(null);
-  const scrollGallery = (direction: number) => {
-    if (galleryRef.current) {
-      galleryRef.current.scrollBy({ left: direction, behavior: 'smooth' });
-    }
-  };
+  const workshopGalleryRef = useRef<HTMLDivElement>(null);
+  const testimonialGalleryRef1 = useRef<HTMLDivElement>(null);
+  const testimonialGalleryRef2 = useRef<HTMLDivElement>(null);
 
-  // Auto redirect logic on thank you page removed
+  useEffect(() => {
+    let animId: number;
+
+    const scrollContainer = (ref: React.RefObject<HTMLDivElement>, isHovered: boolean, speed = 1) => {
+      if (ref.current && !isHovered) {
+        const el = ref.current;
+        el.scrollLeft += speed;
+        if (el.scrollLeft >= el.scrollWidth - el.clientWidth - 2) {
+          el.scrollLeft = 0;
+        }
+      }
+    };
+
+    const animate = () => {
+      scrollContainer(workshopGalleryRef, isWorkshopHovered, 1);
+      scrollContainer(testimonialGalleryRef1, isTestimonial1Hovered, 1);
+      scrollContainer(testimonialGalleryRef2, isTestimonial2Hovered, 1);
+      animId = requestAnimationFrame(animate);
+    };
+
+    animId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animId);
+  }, [isWorkshopHovered, isTestimonial1Hovered, isTestimonial2Hovered]);
+
   const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/LaK9UODGNHOJWF6JnMkPJh?s=cl&p=a&ilr=1";
 
   const handleWhatsAppChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -875,7 +898,7 @@ export default function App() {
       <div className="absolute bottom-[20%] left-[-10%] w-[50%] h-[50%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-600/5 to-transparent rounded-full blur-3xl pointer-events-none"></div>
 
       {/* SECTION 1 – HERO / ABOVE THE FOLD */}
-      <section className="relative overflow-hidden pt-8 md:pt-12 pb-12 border-b border-amber-500/10 min-h-[500px] flex items-center" style={{ backgroundImage: "url('https://d1cmkr5tdoeyjk.cloudfront.net/tnpsc/tnpsc_pic_web.jpg')", backgroundSize: "cover", backgroundPosition: "center" }}>
+      <section className="relative overflow-hidden w-full pt-0 md:pt-0 pb-12 min-h-[500px] flex items-center bg-black" style={{ backgroundImage: "url('https://d1cmkr5tdoeyjk.cloudfront.net/tnpsc/tnpsc_pic_web.jpg')", backgroundSize: "cover", backgroundPosition: "top" }}>
         
         {/* Dark overlay for readability */}
         <div className="absolute inset-0 bg-black/70"></div>
@@ -1243,32 +1266,22 @@ export default function App() {
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-12">
             <h2 className="text-3xl md:text-4xl font-extrabold text-white">Our Workshops</h2>
-            <div className="flex gap-2">
-              <button 
-                onClick={() => scrollGallery(-300)}
-                className="p-3 rounded-full bg-slate-900 border border-amber-500/20 text-white hover:bg-amber-500/10 transition"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <button 
-                onClick={() => scrollGallery(300)}
-                className="p-3 rounded-full bg-slate-900 border border-amber-500/20 text-white hover:bg-amber-500/10 transition"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
-            </div>
           </div>
           
           <div 
-            ref={galleryRef}
-            className="flex overflow-x-auto gap-6 pb-8 snap-x scroll-smooth no-scrollbar"
+            ref={workshopGalleryRef}
+            onMouseEnter={() => setIsWorkshopHovered(true)}
+            onMouseLeave={() => setIsWorkshopHovered(false)}
+            onTouchStart={() => setIsWorkshopHovered(true)}
+            onTouchEnd={() => setIsWorkshopHovered(false)}
+            className="flex overflow-x-auto gap-6 pb-8 no-scrollbar"
           >
-            {["Students (1).jpeg", "Students (2).jpeg", "Students (5).jpeg", "Students (6).jpeg"].map((img, i) => (
+            {["Students (1).jpeg", "Students (2).jpeg", "Students (5).jpeg", "Students (6).jpeg", "Students (1).jpeg", "Students (2).jpeg", "Students (5).jpeg", "Students (6).jpeg", "Students (1).jpeg", "Students (2).jpeg", "Students (5).jpeg", "Students (6).jpeg"].map((img, i) => (
               <img 
                 key={i} 
                 src={`/images/${img}`} 
                 alt={`Workshop ${i + 1}`} 
-                className="min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] object-cover rounded-2xl snap-start border border-amber-500/20"
+                className="min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] object-cover rounded-2xl shrink-0 border border-amber-500/20"
               />
             ))}
           </div>
@@ -1277,25 +1290,48 @@ export default function App() {
 
       {/* SECTION 2.5 - TESTIMONIALS */}
       <section className="py-20 px-4 bg-[#0a0a0a] border-b border-amber-500/10">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">Student Success Stories</h2>
-            <div className="w-16 h-1 bg-amber-500 mx-auto rounded-full"></div>
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between mb-12">
+            <div>
+              <span className="text-amber-400 font-extrabold uppercase text-xs tracking-widest block mb-1">Real Aspirants • உண்மையான மாணவர் அனுபவங்கள்</span>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-white">Student Success Stories</h2>
+            </div>
           </div>
           
-          <div className="flex overflow-x-auto gap-6 pb-8 snap-x">
-            {testimonials.map((t) => (
-              <div key={t.id} className="min-w-[300px] md:min-w-[350px] bg-[#121212] p-6 rounded-2xl border border-amber-500/10 snap-start flex flex-col">
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(t.rating)].map((_, i) => <Star key={i} className="w-4 h-4 fill-amber-500 text-amber-500" />)}
-                </div>
-                <p className="text-slate-300 text-sm mb-6 flex-grow italic">"{t.feedback}"</p>
-                <div className="flex items-center gap-4 mt-auto">
-                  {t.image && <img src={t.image} alt={t.name} className="w-12 h-12 rounded-full object-cover" />}
-                  <div>
-                    <p className="text-white font-bold">{t.name}</p>
-                    <p className="text-amber-500 text-xs">{t.role} • {t.location}</p>
+          <div 
+            ref={testimonialGalleryRef1} 
+            onMouseEnter={() => setIsTestimonial1Hovered(true)}
+            onMouseLeave={() => setIsTestimonial1Hovered(false)}
+            onTouchStart={() => setIsTestimonial1Hovered(true)}
+            onTouchEnd={() => setIsTestimonial1Hovered(false)}
+            className="flex overflow-x-auto gap-6 pb-8 no-scrollbar"
+          >
+            {[...testimonials, ...testimonials].map((t, index) => (
+              <div 
+                key={`${t.id}-${index}`} 
+                className="w-[280px] sm:w-[320px] lg:w-[340px] bg-[#121212] border border-amber-500/20 rounded-2xl shrink-0 flex flex-col justify-between p-6 hover:border-amber-400/60 transition duration-300 group shadow-sm"
+              >
+                {/* Card Header: Name, Location, Rating */}
+                <div className="space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <h3 className="text-white font-extrabold text-base group-hover:text-amber-400 transition-colors">
+                        {t.name}
+                      </h3>
+                      <p className="text-amber-500 text-xs font-semibold mt-0.5">
+                        {t.role} • {t.location}
+                      </p>
+                    </div>
+                    <div className="flex gap-0.5 shrink-0 pt-0.5">
+                      {[...Array(t.rating)].map((_, i) => (
+                        <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                      ))}
+                    </div>
                   </div>
+
+                  <p className="text-slate-300 text-sm leading-relaxed italic bg-black/40 p-4 rounded-xl border border-white/5">
+                    "{t.feedback}"
+                  </p>
                 </div>
               </div>
             ))}
@@ -1915,112 +1951,57 @@ export default function App() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-amber-500/5 via-transparent to-transparent pointer-events-none"></div>
         
         <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10 mb-8">
-          <div className="space-y-3 text-left">
-            <span className="text-amber-400 font-extrabold uppercase text-xs tracking-widest block">Aspirants Feedback • மாணவர் கருத்துக்கள்</span>
-            <h2 className="text-3xl md:text-4xl font-black font-display text-white tracking-tight">
-              Aspirants Success Stories
-            </h2>
-            <p className="text-slate-400 text-sm md:text-base max-w-2xl">
-              Real feedback and experiences from TNPSC aspirants who participated and succeeded with Ambedkar Academy's free guidance workshops.
-            </p>
+          <div className="flex items-center justify-between mb-12">
+            <div className="space-y-3 text-left">
+              <span className="text-amber-400 font-extrabold uppercase text-xs tracking-widest block">Aspirants Feedback • மாணவர் கருத்துக்கள்</span>
+              <h2 className="text-3xl md:text-4xl font-black font-display text-white tracking-tight">
+                Aspirants Success Stories
+              </h2>
+            </div>
           </div>
         </div>
 
-        {/* Continuous Auto-Scrolling Testimonials Row */}
-        <div className="relative overflow-hidden w-full py-4 group">
-          <div className="flex animate-marquee-slow gap-6 whitespace-nowrap hover:[animation-play-state:paused]">
-            {/* First sequence of cards */}
-            <div className="flex gap-6 shrink-0">
-              {testimonials.map((t) => (
-                <div
-                  key={`scroll-row-1-${t.id}`}
-                  className="w-[340px] bg-[#0a0908] border border-amber-500/20 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-amber-400/60 transition duration-200 flex flex-col justify-between whitespace-normal relative group/card"
-                >
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-t-2xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"></div>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex gap-0.5">
-                        {[...Array(t.rating)].map((_, i) => (
-                          <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                        ))}
-                      </div>
-                      <span className="text-amber-500/40 font-serif text-4xl select-none leading-none -mt-2">“</span>
-                    </div>
-
-                    <p className="text-slate-300 text-sm font-medium leading-relaxed italic h-[110px] overflow-y-auto">
-                      {t.feedback}
+        {/* Auto Scrolling Testimonials Row */}
+        <div 
+          ref={testimonialGalleryRef2}
+          onMouseEnter={() => setIsTestimonial2Hovered(true)}
+          onMouseLeave={() => setIsTestimonial2Hovered(false)}
+          onTouchStart={() => setIsTestimonial2Hovered(true)}
+          onTouchEnd={() => setIsTestimonial2Hovered(false)}
+          className="flex overflow-x-auto gap-6 pb-8 no-scrollbar px-4 md:px-8"
+        >
+          {[...testimonials, ...testimonials].map((t, index) => (
+            <div
+              key={`${t.id}-sec10-${index}`}
+              className="w-[280px] sm:w-[320px] lg:w-[340px] bg-[#0a0908] border border-amber-500/20 rounded-2xl p-6 shrink-0 flex flex-col justify-between hover:border-amber-400/60 transition duration-300 group shadow-sm"
+            >
+              <div className="space-y-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <h4 className="font-extrabold text-white text-base group-hover:text-amber-400 transition-colors">
+                      {t.name}
+                    </h4>
+                    <p className="text-amber-500 text-xs font-semibold mt-0.5">
+                      {t.role} • {t.location}
                     </p>
                   </div>
-
-                  <div className="pt-4 mt-6 border-t border-slate-800 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500/10 to-yellow-500/10 border border-amber-500/20 flex items-center justify-center font-extrabold text-amber-400 text-sm">
-                      {t.name.charAt(0)}
-                    </div>
-                    <div>
-                      <h4 className="font-extrabold text-white text-sm flex items-center gap-1.5">
-                        {t.name}
-                        <span className="text-[10px] bg-amber-500/10 text-amber-400 px-1.5 py-0.5 rounded-md font-semibold">
-                          {t.location}
-                        </span>
-                      </h4>
-                      <p className="text-[11px] text-slate-500 font-medium">{t.role}</p>
-                    </div>
+                  <div className="flex gap-0.5 shrink-0 pt-0.5">
+                    {[...Array(t.rating)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                    ))}
                   </div>
                 </div>
-              ))}
+
+                <p className="text-slate-300 text-sm leading-relaxed italic bg-black/40 p-4 rounded-xl border border-white/5">
+                  "{t.feedback}"
+                </p>
+              </div>
             </div>
-
-            {/* Identical Duplicate for seamless loop */}
-            <div className="flex gap-6 shrink-0">
-              {testimonials.map((t) => (
-                <div
-                  key={`scroll-row-2-${t.id}`}
-                  className="w-[340px] bg-[#0a0908] border border-amber-500/20 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-amber-400/60 transition duration-200 flex flex-col justify-between whitespace-normal relative group/card"
-                >
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-t-2xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"></div>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex gap-0.5">
-                        {[...Array(t.rating)].map((_, i) => (
-                          <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                        ))}
-                      </div>
-                      <span className="text-amber-500/40 font-serif text-4xl select-none leading-none -mt-2">“</span>
-                    </div>
-
-                    <p className="text-slate-300 text-sm font-medium leading-relaxed italic h-[110px] overflow-y-auto">
-                      {t.feedback}
-                    </p>
-                  </div>
-
-                  <div className="pt-4 mt-6 border-t border-slate-800 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500/10 to-yellow-500/10 border border-amber-500/20 flex items-center justify-center font-extrabold text-amber-400 text-sm">
-                      {t.name.charAt(0)}
-                    </div>
-                    <div>
-                      <h4 className="font-extrabold text-white text-sm flex items-center gap-1.5">
-                        {t.name}
-                        <span className="text-[10px] bg-amber-500/10 text-amber-400 px-1.5 py-0.5 rounded-md font-semibold">
-                          {t.location}
-                        </span>
-                      </h4>
-                      <p className="text-[11px] text-slate-500 font-medium">{t.role}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Quick instructions indicator for hovering */}
-        <div className="flex items-center justify-center gap-2 mt-4 text-[11px] text-slate-500 font-bold uppercase tracking-wider">
-          <span>Hover over card to stop scrolling and read</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-          <span>Aspirants' Success Stories</span>
-        </div>
+        
       </section>
 
       {/* SECTION 11 – FINAL URGENCY CTA */}
