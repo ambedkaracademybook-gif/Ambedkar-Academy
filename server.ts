@@ -29,6 +29,7 @@ async function startServer() {
         preparingFor,
         currentPosition,
         previousCoaching,
+        location,
       } = req.body;
 
       // Basic validation
@@ -59,6 +60,7 @@ async function startServer() {
         preparingFor,
         currentPosition,
         previousCoaching,
+        location: location || "",
       };
 
       if (isDuplicate) {
@@ -90,12 +92,13 @@ async function startServer() {
 
           const range = `${sheetTitle}!A:A`;
           const rowData = [
-            timestamp,
             fullName,
             whatsAppNumber,
             preparingFor,
             currentPosition,
             previousCoaching,
+            location || "",
+            timestamp,
           ];
 
           const response = await fetch(
@@ -130,17 +133,26 @@ async function startServer() {
 
       // Fallback/direct attempt using Webhook if Direct Sync was not configured or if it failed (e.g. expired token)
       if (sheetStatus !== "success") {
-        const webhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
-        if (webhookUrl && webhookUrl.trim() !== "") {
-          console.log(`[Sheets Webhook Fallback] Attempting to forward lead to Webhook URL: ${webhookUrl} (Direct Status: ${sheetStatus})`);
+        let configWebhook = "";
+        if (fs.existsSync(SHEETS_CONFIG_FILE)) {
+          try {
+            const cfg = JSON.parse(fs.readFileSync(SHEETS_CONFIG_FILE, "utf-8"));
+            configWebhook = cfg.webhookUrl || "";
+          } catch (e) {}
+        }
+        const webhookUrl = (configWebhook || process.env.GOOGLE_SHEETS_WEBHOOK_URL || "https://script.google.com/macros/s/AKfycbxCTs_bMnrR3LV-UwSB9VOKtaQtW063tfeHNqi91XgivuFFivr-8njptAAobAwOVoMpdA/exec").trim();
+        
+        if (webhookUrl !== "") {
+          console.log(`[Sheets Webhook] Attempting to forward lead to Webhook URL: ${webhookUrl} (Direct Status: ${sheetStatus})`);
           try {
             const sheetPayload = {
-              timestamp,
               fullName,
               whatsAppNumber,
               preparingFor,
               currentPosition,
               previousCoaching,
+              location: location || "",
+              timestamp: new Date().toLocaleString(),
             };
 
             const response = await fetch(webhookUrl, {
@@ -149,11 +161,12 @@ async function startServer() {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify(sheetPayload),
+              redirect: "follow",
             });
 
             console.log(`[Sheets Webhook] Response Status: ${response.status} ${response.statusText}`);
 
-            if (response.ok) {
+            if (response.ok || response.status === 302 || response.status === 200) {
               sheetStatus = "success";
               console.log(`[Sheets Webhook] Lead successfully logged to Google Sheet via Webhook.`);
             } else {

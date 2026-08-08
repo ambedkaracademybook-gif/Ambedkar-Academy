@@ -29,7 +29,10 @@ import {
   Search,
   Filter,
   Database,
-  RefreshCw
+  RefreshCw,
+  Maximize2,
+  FileSpreadsheet,
+  X
 } from "lucide-react";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
@@ -74,6 +77,7 @@ export default function App() {
   const [syncSuccessMessage, setSyncSuccessMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterPrep, setFilterPrep] = useState("");
+  const [selectedReviewImage, setSelectedReviewImage] = useState<string | null>(null);
 
   const fetchRegistrations = async () => {
     try {
@@ -165,6 +169,23 @@ export default function App() {
 
       setCurrentUser(result.user);
 
+      let cleanSpreadsheetId = existingSpreadsheetId.trim();
+      if (useExistingId && cleanSpreadsheetId) {
+        if (cleanSpreadsheetId.startsWith("https://script.google.com/")) {
+          // User pasted a Google Apps Script Web App URL!
+          // We can link directly via Google OAuth if they provided a sheet ID, or prompt them.
+          const urlMatch = cleanSpreadsheetId.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+          if (urlMatch) {
+            cleanSpreadsheetId = urlMatch[1];
+          }
+        } else {
+          const match = cleanSpreadsheetId.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+          if (match) {
+            cleanSpreadsheetId = match[1];
+          }
+        }
+      }
+
       // Send to backend setup
       const res = await fetch("/api/sheets/setup", {
         method: "POST",
@@ -173,7 +194,7 @@ export default function App() {
         },
         body: JSON.stringify({
           accessToken: token,
-          spreadsheetId: useExistingId ? existingSpreadsheetId.trim() : undefined,
+          spreadsheetId: useExistingId ? cleanSpreadsheetId : undefined,
         }),
       });
 
@@ -238,9 +259,9 @@ export default function App() {
     window.scrollTo(0, 0);
   };
 
-  // Workshop Date Setup (August 26, 2026, 11:00 AM IST)
-  // IST is UTC+05:30. "2026-08-26T11:00:00+05:30"
-  const TARGET_DATE = new Date("2026-08-26T11:00:00+05:30").getTime();
+  // Workshop Date Setup (August 16, 2026, 11:00 AM IST)
+  // IST is UTC+05:30. "2026-08-16T11:00:00+05:30"
+  const TARGET_DATE = new Date("2026-08-16T11:00:00+05:30").getTime();
 
   // Countdown timer state
   const [timeLeft, setTimeLeft] = useState({
@@ -286,11 +307,9 @@ export default function App() {
   const [formError, setFormError] = useState("");
   const [isWorkshopHovered, setIsWorkshopHovered] = useState(false);
   const [isTestimonial1Hovered, setIsTestimonial1Hovered] = useState(false);
-  const [isTestimonial2Hovered, setIsTestimonial2Hovered] = useState(false);
 
   const workshopGalleryRef = useRef<HTMLDivElement>(null);
   const testimonialGalleryRef1 = useRef<HTMLDivElement>(null);
-  const testimonialGalleryRef2 = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let animId: number;
@@ -308,13 +327,12 @@ export default function App() {
     const animate = () => {
       scrollContainer(workshopGalleryRef, isWorkshopHovered, 1);
       scrollContainer(testimonialGalleryRef1, isTestimonial1Hovered, 1);
-      scrollContainer(testimonialGalleryRef2, isTestimonial2Hovered, 1);
       animId = requestAnimationFrame(animate);
     };
 
     animId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animId);
-  }, [isWorkshopHovered, isTestimonial1Hovered, isTestimonial2Hovered]);
+  }, [isWorkshopHovered, isTestimonial1Hovered]);
 
   const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/LaK9UODGNHOJWF6JnMkPJh?s=cl&p=a&ilr=1";
 
@@ -374,42 +392,75 @@ export default function App() {
     setIsLoading(true);
 
     try {
-      // Direct submission to Google Sheets
-      const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwHtzhKIw39nAcutHK8KYRn0Igl1ZR3hPpxSQlYmFbgRqqSSZ8wgkPJ-2ab7pWVrTz3/exec";
-      
-      const response = await fetch(GOOGLE_SHEET_URL, {
-        method: "POST",
-        mode: "no-cors", // Reverted to no-cors
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fullName,
-          whatsAppNumber,
-          preparingFor,
-          currentPosition,
-          previousCoaching,
-          location,
-          timestamp: new Date().toLocaleString(),
-        }),
-      });
+      // 1. Post to backend server (/api/register) which handles local JSON storage & Google Sheets sync (Direct OAuth / Apps Script Webhook)
+      let backendSuccess = false;
+      try {
+        const backendRes = await fetch("/api/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fullName,
+            whatsAppNumber,
+            preparingFor,
+            currentPosition,
+            previousCoaching,
+            location,
+          }),
+        });
+        if (backendRes.ok) {
+          backendSuccess = true;
+        }
+      } catch (err) {
+        console.warn("Backend registration endpoint notice:", err);
+      }
 
-      // Submission to CRM Webhook
+      // 2. Direct submission to Google Apps Script Web App (only if backend sync wasn't already handled)
+      if (!backendSuccess) {
+        const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxCTs_bMnrR3LV-UwSB9VOKtaQtW063tfeHNqi91XgivuFFivr-8njptAAobAwOVoMpdA/exec";
+        try {
+          await fetch(GOOGLE_SHEET_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              fullName,
+              whatsAppNumber,
+              preparingFor,
+              currentPosition,
+              previousCoaching,
+              location,
+              timestamp: new Date().toLocaleString(),
+            }),
+          });
+        } catch (scriptErr) {
+          console.warn("Direct Apps Script fetch notice:", scriptErr);
+        }
+      }
+
+      // 3. Submission to CRM Webhook
       const CRM_WEBHOOK_URL = "https://us-central1-dealclosure-crm.cloudfunctions.net/dealConverterCrmWebhook?webhookId=4nyyEdcYaMzfxRAzlY88";
-      await fetch(CRM_WEBHOOK_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contact_name: fullName,
-          mobile: whatsAppNumber,
-          preparing_for: preparingFor,
-          current_position: currentPosition,
-          attended_coaching_before: previousCoaching,
-          your_location: location,
-        }),
-      });
+      try {
+        await fetch(CRM_WEBHOOK_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            contact_name: fullName,
+            mobile: whatsAppNumber,
+            preparing_for: preparingFor,
+            current_position: currentPosition,
+            attended_coaching_before: previousCoaching,
+            your_location: location,
+          }),
+        });
+      } catch (crmErr) {
+        console.warn("CRM Webhook fetch notice:", crmErr);
+      }
 
       // Since we are using no-cors, we can't check response.json().
       // Assuming success if fetch didn't throw.
@@ -618,7 +669,7 @@ export default function App() {
                     </p>
                     <input
                       type="text"
-                      placeholder="Spreadsheet ID (e.g., 1aBc...)"
+                      placeholder="Spreadsheet ID or Web App URL (e.g., 1aBc... or https://script.google.com/...)"
                       value={existingSpreadsheetId}
                       onChange={(e) => setExistingSpreadsheetId(e.target.value)}
                       className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs font-mono text-slate-200 placeholder-slate-600 focus:outline-none focus:border-amber-500 transition-all duration-150"
@@ -829,7 +880,7 @@ export default function App() {
                 <Calendar className="w-5 h-5 text-amber-400 mt-0.5 shrink-0" />
                 <div>
                   <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Date</p>
-                  <p className="text-sm font-bold text-white">August 26, 2026 (Sunday)</p>
+                  <p className="text-sm font-bold text-white">August 16, 2026 (Sunday)</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -879,15 +930,15 @@ export default function App() {
         <div className="animate-marquee whitespace-nowrap flex items-center gap-16">
           <div className="flex items-center gap-8 shrink-0">
             <span className="bg-amber-500 text-slate-950 text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider animate-pulse shrink-0">Limited Seats Left</span>
-            <span className="font-sans font-extrabold uppercase text-white">🚨 HURRY UP! ONLY LIMITED SEATS ARE LEFT FOR THE FREE AUGUST 2ND TNPSC WORKSHOP! REGISTER NOW TO SECURE YOUR SPOT! 🚨</span>
+            <span className="font-sans font-extrabold uppercase text-white">🚨 HURRY UP! ONLY LIMITED SEATS ARE LEFT FOR THE FREE AUGUST 16TH TNPSC WORKSHOP! REGISTER NOW TO SECURE YOUR SPOT! 🚨</span>
             <span className="text-amber-500/40">|</span>
-            <span className="font-sans font-extrabold uppercase text-amber-400">🚨 ஆகஸ்ட் 2ஆம் தேதி நடைபெறும் இலவச TNPSC வழிகாட்டுதல் வகுப்பிற்கு மிகக் குறைந்த இடங்களே உள்ளன! உடனே பதிவு செய்யவும்! 🚨</span>
+            <span className="font-sans font-extrabold uppercase text-amber-400">🚨 ஆகஸ்ட் 16ஆம் தேதி நடைபெறும் இலவச TNPSC வழிகாட்டுதல் வகுப்பிற்கு மிகக் குறைந்த இடங்களே உள்ளன! உடனே பதிவு செய்யவும்! 🚨</span>
           </div>
           <div className="flex items-center gap-8 shrink-0">
             <span className="bg-amber-500 text-slate-950 text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider animate-pulse shrink-0">Limited Seats Left</span>
-            <span className="font-sans font-extrabold uppercase text-white">🚨 HURRY UP! ONLY LIMITED SEATS ARE LEFT FOR THE FREE AUGUST 2ND TNPSC WORKSHOP! REGISTER NOW TO SECURE YOUR SPOT! 🚨</span>
+            <span className="font-sans font-extrabold uppercase text-white">🚨 HURRY UP! ONLY LIMITED SEATS ARE LEFT FOR THE FREE AUGUST 16TH TNPSC WORKSHOP! REGISTER NOW TO SECURE YOUR SPOT! 🚨</span>
             <span className="text-amber-500/40">|</span>
-            <span className="font-sans font-extrabold uppercase text-amber-400">🚨 ஆகஸ்ட் 2ஆம் தேதி நடைபெறும் இலவச TNPSC வழிகாட்டுதல் வகுப்பிற்கு மிகக் குறைந்த இடங்களே உள்ளன! உடனே பதிவு செய்யவும்! 🚨</span>
+            <span className="font-sans font-extrabold uppercase text-amber-400">🚨 ஆகஸ்ட் 16ஆம் தேதி நடைபெறும் இலவச TNPSC வழிகாட்டுதல் வகுப்பிற்கு மிகக் குறைந்த இடங்களே உள்ளன! உடனே பதிவு செய்யவும்! 🚨</span>
           </div>
         </div>
       </div>
@@ -1024,7 +1075,7 @@ export default function App() {
                 {/* DATE */}
                 <div className="bg-[#0c0a09]/90 border border-amber-500/10 p-3.5 rounded-xl flex flex-col justify-between shadow-md">
                   <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest block mb-1">DATE</span>
-                  <span className="text-sm font-extrabold text-white leading-tight">August 26, 2026</span>
+                  <span className="text-sm font-extrabold text-white leading-tight">August 16, 2026</span>
                   <span className="text-[10px] text-slate-400 font-semibold mt-0.5">(Sunday)</span>
                 </div>
 
@@ -1336,6 +1387,128 @@ export default function App() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* SECTION 2.6 - VERIFIED GOOGLE STUDENT REVIEWS */}
+      <section className="py-20 px-4 md:px-8 bg-[#050505] border-b border-amber-500/10 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto space-y-12">
+          
+          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-widest flex items-center gap-1.5">
+                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                  Verified Student Google Reviews • 5.0 Rating
+                </span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+                Google Review Screenshots <span className="text-amber-500 font-normal">| மாணவர் நேரடி கருத்துக்கள்</span>
+              </h2>
+              <p className="text-slate-400 text-sm max-w-2xl leading-relaxed">
+                Authentic Google Reviews and feedback screenshots from TNPSC aspirants who attended Dr. Ambedkar Academy's seminars and offline coaching.
+              </p>
+            </div>
+
+            <a 
+              href="/sheets-setup"
+              onClick={(e) => { e.preventDefault(); navigateTo("/sheets-setup"); }}
+              className="text-xs font-bold text-amber-400 hover:text-amber-300 border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 px-4 py-2 rounded-xl transition duration-200 flex items-center gap-2 cursor-pointer shrink-0"
+            >
+              <FileSpreadsheet className="w-4 h-4" />
+              Google Sheets Admin
+            </a>
+          </div>
+
+          {/* 5 Review Cards Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+            {[
+              {
+                id: "r1",
+                name: "Dhanu Murugan",
+                role: "Free Class Feedback",
+                rating: 5,
+                text: "இந்த free class எனக்கு ரொம்ப பயனுள்ளதாக இருந்தது... Maths ரொம்ப ஆச்சரியமாக இருந்தது!",
+                image: "/images/Review (1).jpeg"
+              },
+              {
+                id: "r2",
+                name: "Maruthanayagam & Kavin",
+                role: "Guidance Session",
+                rating: 5,
+                text: "Very informative session, excellent faculty delivery and clear exam preparation strategy.",
+                image: "/images/Review (2).jpeg"
+              },
+              {
+                id: "r3",
+                name: "Daya Lakshmi & Bharath",
+                role: "Maths & Aptitude Class",
+                rating: 5,
+                text: "Maths faculty teaching was good! Inspiring session for Group 2 & 4 aspirants.",
+                image: "/images/Review (3).jpeg"
+              },
+              {
+                id: "r4",
+                name: "Nirmala R & Manibalan",
+                role: "Google Review",
+                rating: 5,
+                text: "Good teaching, supportive faculty and a great place to learn. Highly recommended!",
+                image: "/images/Review (4).jpeg"
+              },
+              {
+                id: "r5",
+                name: "Praveen Chand",
+                role: "Offline Workshop",
+                rating: 5,
+                text: "Proper guidance, offline classroom environment, clear preparation strategy and syllabus breakdown.",
+                image: "/images/Review (5).jpeg"
+              }
+            ].map((review) => (
+              <div 
+                key={review.id}
+                onClick={() => setSelectedReviewImage(review.image)}
+                className="bg-[#101010] border border-amber-500/20 hover:border-amber-400/60 rounded-2xl overflow-hidden cursor-pointer group transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 shadow-lg"
+              >
+                {/* Screenshot Image Container */}
+                <div className="relative h-64 w-full bg-slate-900 overflow-hidden flex items-center justify-center p-2 border-b border-amber-500/10">
+                  <img 
+                    src={review.image} 
+                    alt={review.name}
+                    className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300 rounded-lg"
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 backdrop-blur-[2px]">
+                    <span className="bg-amber-500 text-slate-950 font-black text-xs px-3 py-1.5 rounded-lg flex items-center gap-1 shadow-lg">
+                      <Maximize2 className="w-3.5 h-3.5" /> Enlarge Review
+                    </span>
+                  </div>
+                </div>
+
+                {/* Details */}
+                <div className="p-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-white font-extrabold text-sm group-hover:text-amber-400 transition-colors truncate">
+                      {review.name}
+                    </h3>
+                    <div className="flex gap-0.5 shrink-0">
+                      {[...Array(review.rating)].map((_, i) => (
+                        <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-amber-500 text-[11px] font-semibold">
+                    {review.role}
+                  </p>
+                  <p className="text-slate-400 text-xs line-clamp-2 italic">
+                    "{review.text}"
+                  </p>
+                  <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider block pt-1">
+                    ✓ Verified Google Review
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
         </div>
       </section>
 
@@ -1946,64 +2119,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* SECTION: AUTO-SCROLLING ENGLISH TESTIMONIALS */}
-      <section id="tamil-testimonials-section" className="py-20 bg-[#030303] border-t border-b border-amber-500/10 relative text-left">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-amber-500/5 via-transparent to-transparent pointer-events-none"></div>
-        
-        <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10 mb-8">
-          <div className="flex items-center justify-between mb-12">
-            <div className="space-y-3 text-left">
-              <span className="text-amber-400 font-extrabold uppercase text-xs tracking-widest block">Aspirants Feedback • மாணவர் கருத்துக்கள்</span>
-              <h2 className="text-3xl md:text-4xl font-black font-display text-white tracking-tight">
-                Aspirants Success Stories
-              </h2>
-            </div>
-          </div>
-        </div>
-
-        {/* Auto Scrolling Testimonials Row */}
-        <div 
-          ref={testimonialGalleryRef2}
-          onMouseEnter={() => setIsTestimonial2Hovered(true)}
-          onMouseLeave={() => setIsTestimonial2Hovered(false)}
-          onTouchStart={() => setIsTestimonial2Hovered(true)}
-          onTouchEnd={() => setIsTestimonial2Hovered(false)}
-          className="flex overflow-x-auto gap-6 pb-8 no-scrollbar px-4 md:px-8"
-        >
-          {[...testimonials, ...testimonials].map((t, index) => (
-            <div
-              key={`${t.id}-sec10-${index}`}
-              className="w-[280px] sm:w-[320px] lg:w-[340px] bg-[#0a0908] border border-amber-500/20 rounded-2xl p-6 shrink-0 flex flex-col justify-between hover:border-amber-400/60 transition duration-300 group shadow-sm"
-            >
-              <div className="space-y-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h4 className="font-extrabold text-white text-base group-hover:text-amber-400 transition-colors">
-                      {t.name}
-                    </h4>
-                    <p className="text-amber-500 text-xs font-semibold mt-0.5">
-                      {t.role} • {t.location}
-                    </p>
-                  </div>
-                  <div className="flex gap-0.5 shrink-0 pt-0.5">
-                    {[...Array(t.rating)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
-                </div>
-
-                <p className="text-slate-300 text-sm leading-relaxed italic bg-black/40 p-4 rounded-xl border border-white/5">
-                  "{t.feedback}"
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Quick instructions indicator for hovering */}
-        
-      </section>
-
       {/* SECTION 11 – FINAL URGENCY CTA */}
       <section className="py-24 px-4 md:px-8 bg-[#030303] border-t border-amber-500/10 relative overflow-hidden">
         
@@ -2030,7 +2145,7 @@ export default function App() {
           <div className="bg-[#0a0908] border border-amber-500/20 p-6 rounded-2xl max-w-xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 text-center shadow-lg">
             <div className="space-y-1">
               <span className="block text-[10px] text-slate-500 uppercase tracking-wider font-bold">Date</span>
-              <span className="block text-sm font-bold text-white">August 26, 2026</span>
+              <span className="block text-sm font-bold text-white">August 16, 2026</span>
             </div>
             <div className="space-y-1 border-t md:border-t-0 md:border-x border-slate-800 py-3 md:py-0">
               <span className="block text-[10px] text-slate-500 uppercase tracking-wider font-bold">Time</span>
@@ -2071,8 +2186,50 @@ export default function App() {
           <p className="text-[10px] text-slate-600 max-w-lg mx-auto">
             Disclaimers: This workshop is for educational blueprint guidance. Participation in model tests is voluntary. Trademarks and syllabus terms reference official TNPSC criteria.
           </p>
+          <div className="pt-2">
+            <a
+              href="/sheets-setup"
+              onClick={(e) => { e.preventDefault(); navigateTo("/sheets-setup"); }}
+              className="inline-flex items-center gap-1.5 text-xs text-amber-500 hover:text-amber-400 font-extrabold bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 px-3.5 py-1.5 rounded-lg transition-all"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5" />
+              Google Sheets Admin Setup / Connect New Sheet
+            </a>
+          </div>
         </div>
       </footer>
+
+      {/* LIGHTBOX MODAL FOR GOOGLE REVIEW SCREENSHOTS */}
+      {selectedReviewImage && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn"
+          onClick={() => setSelectedReviewImage(null)}
+        >
+          <div 
+            className="relative max-w-3xl max-h-[90vh] bg-slate-950 border border-amber-500/30 rounded-2xl overflow-hidden p-2 shadow-2xl flex flex-col items-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSelectedReviewImage(null)}
+              className="absolute top-4 right-4 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-full p-2 font-bold transition-all shadow-lg z-10 cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="w-full flex items-center justify-between px-4 py-2 border-b border-slate-800">
+              <span className="text-xs font-black uppercase text-amber-400 tracking-wider flex items-center gap-1.5">
+                <Star className="w-4 h-4 fill-amber-400 text-amber-400" /> Verified Student Google Review
+              </span>
+            </div>
+            <div className="overflow-auto max-h-[80vh] p-2 flex items-center justify-center">
+              <img 
+                src={selectedReviewImage} 
+                alt="Student Review Full Screenshot"
+                className="max-w-full max-h-[75vh] object-contain rounded-lg border border-slate-800 shadow-xl"
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* STICKY BOTTOM CTA */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur border-t border-slate-200 py-4 px-4 md:px-8 shadow-2xl flex items-center justify-between transition-transform duration-300">
@@ -2084,7 +2241,7 @@ export default function App() {
             <p className="text-sm font-bold text-slate-900">
               TNPSC SUCCESS BLUEPRINT WORKSHOP 2026
               <span className="text-amber-500 font-extrabold mx-2">•</span>
-              <span className="text-slate-600 font-semibold">August 26 | 11 AM – 1 PM | </span>
+              <span className="text-slate-600 font-semibold">August 16 | 11 AM – 1 PM | </span>
               <span className="text-amber-700 font-bold uppercase bg-amber-500/10 px-1.5 py-0.5 rounded text-[10px] border border-amber-500/20 ml-1">FREE</span>
             </p>
           </div>
