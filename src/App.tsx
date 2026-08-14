@@ -334,7 +334,7 @@ export default function App() {
     return () => cancelAnimationFrame(animId);
   }, [isWorkshopHovered, isTestimonial1Hovered]);
 
-  const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/LaK9UODGNHOJWF6JnMkPJh?s=cl&p=a&ilr=1";
+  const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/La8m56aEcHz7SJajorgoAK?s=cl&p=a&ilr=1";
 
   const handleWhatsAppChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.replace(/\D/g, "").slice(0, 10);
@@ -1036,38 +1036,6 @@ export default function App() {
                 <p className="text-slate-200 italic font-semibold text-sm md:text-base leading-relaxed">
                   "Don't Just Study Hard... Study with the Right Strategy."
                 </p>
-              </div>
-
-              {/* Countdown Timer (Medium Size) */}
-              <div className="bg-[#0c0a09]/90 border border-amber-500/20 rounded-2xl p-4 max-w-md shadow-lg">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3.5 justify-between">
-                  <span className="text-[11px] text-amber-400 font-black uppercase tracking-widest flex items-center gap-1.5 shrink-0">
-                    <Clock className="w-4 h-4 animate-pulse text-amber-400" /> STARTS IN:
-                  </span>
-                  
-                  {timeLeft.isExpired ? (
-                    <span className="text-slate-400 font-bold text-sm">Registration Closed</span>
-                  ) : (
-                    <div className="flex items-center gap-2 font-mono">
-                      <div className="flex items-baseline gap-1 bg-black border border-slate-800 rounded-xl px-3 py-1">
-                        <span className="text-sm font-black text-white">{String(timeLeft.days).padStart(2, "0")}</span>
-                        <span className="text-[10px] uppercase text-slate-500 font-bold">d</span>
-                      </div>
-                      <div className="flex items-baseline gap-1 bg-black border border-slate-800 rounded-xl px-3 py-1">
-                        <span className="text-sm font-black text-white">{String(timeLeft.hours).padStart(2, "0")}</span>
-                        <span className="text-[10px] uppercase text-slate-500 font-bold">h</span>
-                      </div>
-                      <div className="flex items-baseline gap-1 bg-black border border-slate-800 rounded-xl px-3 py-1">
-                        <span className="text-sm font-black text-white">{String(timeLeft.minutes).padStart(2, "0")}</span>
-                        <span className="text-[10px] uppercase text-slate-500 font-bold font-sans">m</span>
-                      </div>
-                      <div className="flex items-baseline gap-1 bg-black border border-amber-500/20 rounded-xl px-3 py-1">
-                        <span className="text-sm font-black text-amber-400">{String(timeLeft.seconds).padStart(2, "0")}</span>
-                        <span className="text-[10px] uppercase text-amber-400 font-bold font-sans">s</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
               </div>
 
               {/* Quick Details Grid - 4 Columns, 2 Rows on Mobile, 4 Columns, 1 Row on Desktop */}
