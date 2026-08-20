@@ -46,10 +46,13 @@ const provider = new GoogleAuthProvider();
 provider.addScope("https://www.googleapis.com/auth/spreadsheets");
 
 // Asset paths based on generated images
-const CHALLENGE_IMAGE = "/images/Challenge.png";
-const CASH_PRIZE_IMAGE = "/images/Cash%20Price.png";
-const MENTOR_IMAGE = "/images/Mentor.png";
-const GUEST_IMAGE = "/images/Guest.png";
+const CHALLENGE_IMAGE = "/images/posters/challenge.png";
+const CASH_PRIZE_IMAGE = "/images/posters/cash-prize.png";
+const MENTOR_IMAGE = "/images/speakers/mentor.png";
+const GUEST_IMAGE = "/images/speakers/guest.png";
+const SPEAKER_MOHAN = "/images/speakers/mohan.jpg";
+const SPEAKER_RAVICHANTHIRAN = "/images/speakers/ravichanthiran.jpg";
+const SPEAKER_SABITH_ALI = "/images/speakers/sabith-ali.jpg";
 
 export default function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
@@ -79,6 +82,14 @@ export default function App() {
   const [filterPrep, setFilterPrep] = useState("");
   const [selectedReviewImage, setSelectedReviewImage] = useState<string | null>(null);
 
+  // AiSensy WhatsApp State
+  const [aiSensyConfig, setAiSensyConfig] = useState<{ isConfigured: boolean; maskedKey?: string } | null>(null);
+  const [aiSensyInputKey, setAiSensyInputKey] = useState("");
+  const [aiSensySaving, setAiSensySaving] = useState(false);
+  const [aiSensyMsg, setAiSensyMsg] = useState("");
+  const [testPhone, setTestPhone] = useState("");
+  const [isTestingAiSensy, setIsTestingAiSensy] = useState(false);
+
   const fetchRegistrations = async () => {
     try {
       const res = await fetch("/api/registrations");
@@ -88,6 +99,18 @@ export default function App() {
       }
     } catch (err) {
       console.error("Failed to fetch registrations:", err);
+    }
+  };
+
+  const fetchAiSensyConfig = async () => {
+    try {
+      const res = await fetch("/api/aisensy/config");
+      const data = await res.json();
+      if (data.success) {
+        setAiSensyConfig(data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch AiSensy config:", err);
     }
   };
 
@@ -105,7 +128,56 @@ export default function App() {
     };
     fetchSheetsConfig();
     fetchRegistrations();
+    fetchAiSensyConfig();
   }, [currentPath]);
+
+  const handleSaveAiSensyKey = async () => {
+    if (!aiSensyInputKey.trim()) return;
+    setAiSensySaving(true);
+    setAiSensyMsg("");
+    try {
+      const res = await fetch("/api/aisensy/save-key", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ apiKey: aiSensyInputKey.trim() }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setAiSensyMsg("✅ AiSensy API Key saved successfully!");
+        setAiSensyInputKey("");
+        fetchAiSensyConfig();
+      } else {
+        setAiSensyMsg(`❌ Error: ${data.error || "Failed to save key"}`);
+      }
+    } catch (err: any) {
+      setAiSensyMsg(`❌ Error: ${err.message}`);
+    } finally {
+      setAiSensySaving(false);
+    }
+  };
+
+  const handleTestAiSensy = async () => {
+    if (!testPhone.trim()) return;
+    setIsTestingAiSensy(true);
+    setAiSensyMsg("");
+    try {
+      const res = await fetch("/api/aisensy/test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ destination: testPhone.trim() }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setAiSensyMsg("✅ Test WhatsApp message dispatched successfully via AiSensy!");
+      } else {
+        setAiSensyMsg(`❌ Test failed: ${data.data?.message || data.error || "Could not dispatch message"}`);
+      }
+    } catch (err: any) {
+      setAiSensyMsg(`❌ Error: ${err.message}`);
+    } finally {
+      setIsTestingAiSensy(false);
+    }
+  };
 
   const handleManualSync = async (forcedToken?: string) => {
     setIsSyncing(true);
@@ -259,9 +331,9 @@ export default function App() {
     window.scrollTo(0, 0);
   };
 
-  // Workshop Date Setup (August 16, 2026, 11:00 AM IST)
-  // IST is UTC+05:30. "2026-08-16T11:00:00+05:30"
-  const TARGET_DATE = new Date("2026-08-16T11:00:00+05:30").getTime();
+  // Workshop Date Setup (September 20, 2026, 11:00 AM IST)
+  // IST is UTC+05:30. "2026-09-20T11:00:00+05:30"
+  const TARGET_DATE = new Date("2026-09-20T11:00:00+05:30").getTime();
 
   // Countdown timer state
   const [timeLeft, setTimeLeft] = useState({
@@ -687,6 +759,94 @@ export default function App() {
             )}
           </div>
 
+          {/* AiSensy WhatsApp Automation Config Card */}
+          <div className="w-full bg-slate-900/40 border border-slate-800/80 rounded-3xl p-6 md:p-8 space-y-6 backdrop-blur-sm shadow-2xl text-left">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                  <Phone className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black tracking-tight text-white font-sans flex items-center gap-2">
+                    AiSensy WhatsApp Auto-Message Integration
+                    {aiSensyConfig?.isConfigured ? (
+                      <span className="bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase px-2.5 py-0.5 rounded border border-emerald-500/20">
+                        Active
+                      </span>
+                    ) : (
+                      <span className="bg-amber-500/10 text-amber-400 text-[10px] font-black uppercase px-2.5 py-0.5 rounded border border-amber-500/20">
+                        Needs API Key
+                      </span>
+                    )}
+                  </h3>
+                  <p className="text-xs text-slate-400 font-medium">
+                    Automatically sends instant WhatsApp confirmation to users when they submit the registration form.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {aiSensyMsg && (
+              <div className="bg-slate-950 border border-slate-800 text-xs p-3.5 rounded-xl font-bold text-slate-200">
+                {aiSensyMsg}
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Key Config */}
+              <div className="space-y-3 bg-slate-950/60 p-5 rounded-2xl border border-slate-800">
+                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                  AiSensy API Key
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="password"
+                    placeholder={aiSensyConfig?.maskedKey ? `Current: ${aiSensyConfig.maskedKey}` : "Paste your AiSensy API Key here..."}
+                    value={aiSensyInputKey}
+                    onChange={(e) => setAiSensyInputKey(e.target.value)}
+                    className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 font-mono"
+                  />
+                  <button
+                    onClick={handleSaveAiSensyKey}
+                    disabled={aiSensySaving || !aiSensyInputKey.trim()}
+                    className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl transition duration-150 disabled:opacity-50 uppercase cursor-pointer shrink-0"
+                  >
+                    {aiSensySaving ? "Saving..." : "Save Key"}
+                  </button>
+                </div>
+                <p className="text-[11px] text-slate-500">
+                  Campaign Name: <span className="text-slate-300 font-mono">thanks msg for registrents</span>
+                </p>
+              </div>
+
+              {/* Test Message */}
+              <div className="space-y-3 bg-slate-950/60 p-5 rounded-2xl border border-slate-800">
+                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                  Send Test WhatsApp Message
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="tel"
+                    placeholder="Enter 10-digit WhatsApp number (e.g. 9876543210)"
+                    value={testPhone}
+                    onChange={(e) => setTestPhone(e.target.value)}
+                    className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-mono"
+                  />
+                  <button
+                    onClick={handleTestAiSensy}
+                    disabled={isTestingAiSensy || !testPhone.trim()}
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-4 py-2.5 rounded-xl transition duration-150 disabled:opacity-50 uppercase cursor-pointer shrink-0 flex items-center gap-1.5"
+                  >
+                    {isTestingAiSensy ? "Sending..." : "Test Message"}
+                  </button>
+                </div>
+                <p className="text-[11px] text-slate-500">
+                  Will test dispatching the AiSensy campaign template to this number.
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Database Leads Table */}
           {(() => {
             const filteredRegistrations = registrations.filter((lead) => {
@@ -880,7 +1040,7 @@ export default function App() {
                 <Calendar className="w-5 h-5 text-amber-400 mt-0.5 shrink-0" />
                 <div>
                   <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Date</p>
-                  <p className="text-sm font-bold text-white">August 16, 2026 (Sunday)</p>
+                  <p className="text-sm font-bold text-white">September 20, 2026 (Sunday)</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -930,15 +1090,15 @@ export default function App() {
         <div className="animate-marquee whitespace-nowrap flex items-center gap-16">
           <div className="flex items-center gap-8 shrink-0">
             <span className="bg-amber-500 text-slate-950 text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider animate-pulse shrink-0">Limited Seats Left</span>
-            <span className="font-sans font-extrabold uppercase text-white">🚨 HURRY UP! ONLY LIMITED SEATS ARE LEFT FOR THE FREE AUGUST 16TH TNPSC WORKSHOP! REGISTER NOW TO SECURE YOUR SPOT! 🚨</span>
+            <span className="font-sans font-extrabold uppercase text-white">🚨 HURRY UP! ONLY LIMITED SEATS ARE LEFT FOR THE FREE SEPTEMBER 20TH TNPSC WORKSHOP! REGISTER NOW TO SECURE YOUR SPOT! 🚨</span>
             <span className="text-amber-500/40">|</span>
-            <span className="font-sans font-extrabold uppercase text-amber-400">🚨 ஆகஸ்ட் 16ஆம் தேதி நடைபெறும் இலவச TNPSC வழிகாட்டுதல் வகுப்பிற்கு மிகக் குறைந்த இடங்களே உள்ளன! உடனே பதிவு செய்யவும்! 🚨</span>
+            <span className="font-sans font-extrabold uppercase text-amber-400">🚨 செப்டம்பர் 20ஆம் தேதி நடைபெறும் இலவச TNPSC வழிகாட்டுதல் வகுப்பிற்கு மிகக் குறைந்த இடங்களே உள்ளன! உடனே பதிவு செய்யவும்! 🚨</span>
           </div>
           <div className="flex items-center gap-8 shrink-0">
             <span className="bg-amber-500 text-slate-950 text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider animate-pulse shrink-0">Limited Seats Left</span>
-            <span className="font-sans font-extrabold uppercase text-white">🚨 HURRY UP! ONLY LIMITED SEATS ARE LEFT FOR THE FREE AUGUST 16TH TNPSC WORKSHOP! REGISTER NOW TO SECURE YOUR SPOT! 🚨</span>
+            <span className="font-sans font-extrabold uppercase text-white">🚨 HURRY UP! ONLY LIMITED SEATS ARE LEFT FOR THE FREE SEPTEMBER 20TH TNPSC WORKSHOP! REGISTER NOW TO SECURE YOUR SPOT! 🚨</span>
             <span className="text-amber-500/40">|</span>
-            <span className="font-sans font-extrabold uppercase text-amber-400">🚨 ஆகஸ்ட் 16ஆம் தேதி நடைபெறும் இலவச TNPSC வழிகாட்டுதல் வகுப்பிற்கு மிகக் குறைந்த இடங்களே உள்ளன! உடனே பதிவு செய்யவும்! 🚨</span>
+            <span className="font-sans font-extrabold uppercase text-amber-400">🚨 செப்டம்பர் 20ஆம் தேதி நடைபெறும் இலவச TNPSC வழிகாட்டுதல் வகுப்பிற்கு மிகக் குறைந்த இடங்களே உள்ளன! உடனே பதிவு செய்யவும்! 🚨</span>
           </div>
         </div>
       </div>
@@ -1043,7 +1203,7 @@ export default function App() {
                 {/* DATE */}
                 <div className="bg-[#0c0a09]/90 border border-amber-500/10 p-3.5 rounded-xl flex flex-col justify-between shadow-md">
                   <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest block mb-1">DATE</span>
-                  <span className="text-sm font-extrabold text-white leading-tight">August 16, 2026</span>
+                  <span className="text-sm font-extrabold text-white leading-tight">September 20, 2026</span>
                   <span className="text-[10px] text-slate-400 font-semibold mt-0.5">(Sunday)</span>
                 </div>
 
@@ -1280,11 +1440,19 @@ export default function App() {
         </div>
       </section>
 
-      {/* SECTION 2.4 - WORKSHOPS GALLERY */}
+      {/* SECTION 2.4 - WORKSHOPS & BATCHES GALLERY */}
       <section className="py-20 px-4 bg-[#060606] border-b border-amber-500/10">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-12">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-white">Our Workshops</h2>
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+            <div>
+              <span className="text-amber-400 font-extrabold uppercase text-xs tracking-widest block mb-1">
+                Offline Classroom Highlights • முந்தைய நேரடி வகுப்புகள்
+              </span>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-white">Our Workshops &amp; Batches</h2>
+            </div>
+            <p className="text-xs text-slate-400 max-w-md">
+              Real classroom snapshots from our previous batch sessions conducted at Dr. Ambedkar Academy, Chennai.
+            </p>
           </div>
           
           <div 
@@ -1295,13 +1463,50 @@ export default function App() {
             onTouchEnd={() => setIsWorkshopHovered(false)}
             className="flex overflow-x-auto gap-6 pb-8 no-scrollbar"
           >
-            {["Students (1).jpeg", "Students (2).jpeg", "Students (5).jpeg", "Students (6).jpeg", "Students (1).jpeg", "Students (2).jpeg", "Students (5).jpeg", "Students (6).jpeg", "Students (1).jpeg", "Students (2).jpeg", "Students (5).jpeg", "Students (6).jpeg"].map((img, i) => (
-              <img 
-                key={i} 
-                src={`/images/${img}`} 
-                alt={`Workshop ${i + 1}`} 
-                className="min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] object-cover rounded-2xl shrink-0 border border-amber-500/20"
-              />
+            {[
+              { id: "b1", name: "Batch 1", label: "Intensive Classroom Batch", img: "batches/batch-1.jpg" },
+              { id: "b2", name: "Batch 2", label: "Offline Guidance Workshop", img: "batches/batch-2.jpg" },
+              { id: "b3", name: "Batch 3", label: "Mentorship & Strategy Batch", img: "batches/batch-3.jpg" },
+              { id: "b4", name: "Batch 4", label: "Aspirants Interactive Lecture", img: "batches/batch-4.jpg" },
+              { id: "b1-2", name: "Batch 1", label: "Intensive Classroom Batch", img: "batches/batch-1.jpg" },
+              { id: "b2-2", name: "Batch 2", label: "Offline Guidance Workshop", img: "batches/batch-2.jpg" },
+              { id: "b3-2", name: "Batch 3", label: "Mentorship & Strategy Batch", img: "batches/batch-3.jpg" },
+              { id: "b4-2", name: "Batch 4", label: "Aspirants Interactive Lecture", img: "batches/batch-4.jpg" },
+            ].map((batch, i) => (
+              <div
+                key={i}
+                onClick={() => setSelectedReviewImage(`/images/${batch.img}`)}
+                className="w-[280px] sm:w-[320px] md:w-[360px] bg-[#101010] border border-amber-500/20 hover:border-amber-400/60 rounded-2xl overflow-hidden shrink-0 flex flex-col justify-between group transition-all duration-300 shadow-lg cursor-pointer hover:-translate-y-1"
+              >
+                <div className="relative h-[200px] md:h-[230px] w-full overflow-hidden bg-slate-900 flex items-center justify-center">
+                  <img 
+                    src={`/images/${batch.img}`} 
+                    alt={batch.name} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-sm border border-amber-500/30 text-amber-400 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
+                    {batch.name}
+                  </div>
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <span className="bg-amber-500 text-slate-950 font-black text-xs px-3 py-1.5 rounded-lg flex items-center gap-1 shadow-lg">
+                      <Maximize2 className="w-3.5 h-3.5" /> Enlarge Photo
+                    </span>
+                  </div>
+                </div>
+                <div className="p-4 bg-[#121212] border-t border-amber-500/10 flex items-center justify-between">
+                  <div>
+                    <h3 className="text-white font-extrabold text-sm group-hover:text-amber-400 transition-colors">
+                      {batch.name}
+                    </h3>
+                    <p className="text-slate-400 text-xs mt-0.5">
+                      {batch.label}
+                    </p>
+                  </div>
+                  <span className="text-amber-400 text-[10px] font-bold uppercase bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded">
+                    Offline
+                  </span>
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -1397,7 +1602,7 @@ export default function App() {
                 role: "Free Class Feedback",
                 rating: 5,
                 text: "இந்த free class எனக்கு ரொம்ப பயனுள்ளதாக இருந்தது... Maths ரொம்ப ஆச்சரியமாக இருந்தது!",
-                image: "/images/Review (1).jpeg"
+                image: "/images/reviews/review-1.jpeg"
               },
               {
                 id: "r2",
@@ -1405,7 +1610,7 @@ export default function App() {
                 role: "Guidance Session",
                 rating: 5,
                 text: "Very informative session, excellent faculty delivery and clear exam preparation strategy.",
-                image: "/images/Review (2).jpeg"
+                image: "/images/reviews/review-2.jpeg"
               },
               {
                 id: "r3",
@@ -1413,7 +1618,7 @@ export default function App() {
                 role: "Maths & Aptitude Class",
                 rating: 5,
                 text: "Maths faculty teaching was good! Inspiring session for Group 2 & 4 aspirants.",
-                image: "/images/Review (3).jpeg"
+                image: "/images/reviews/review-3.jpeg"
               },
               {
                 id: "r4",
@@ -1421,7 +1626,7 @@ export default function App() {
                 role: "Google Review",
                 rating: 5,
                 text: "Good teaching, supportive faculty and a great place to learn. Highly recommended!",
-                image: "/images/Review (4).jpeg"
+                image: "/images/reviews/review-4.jpeg"
               },
               {
                 id: "r5",
@@ -1429,7 +1634,7 @@ export default function App() {
                 role: "Offline Workshop",
                 rating: 5,
                 text: "Proper guidance, offline classroom environment, clear preparation strategy and syllabus breakdown.",
-                image: "/images/Review (5).jpeg"
+                image: "/images/reviews/review-5.jpeg"
               }
             ].map((review) => (
               <div 
@@ -1819,7 +2024,7 @@ export default function App() {
               { num: "3", name: "Study Planner Toolkit", desc: "A structured timeline matrix that tracks study progress across historical facts, Tamil literature chapters, and mathematical mental abilities.", value: "FREE" },
               { num: "4", name: "Ambedkar Mobile App Demo", desc: "Interactive walkthrough showing how to use our online platform to practice daily live model questions on your smartphone.", value: "FREE" },
               { num: "5", name: "Guidance Session Booking", desc: "Access code to schedule a personalized 1-on-1 performance audit session with our academic mentors to diagnose learning bottlenecks.", value: "FREE" },
-              { num: "6", name: "Counseling for August Batch", desc: "Priority counseling seats allocated for our premium offline physical test batches commencing in August in Chennai.", value: "FREE" }
+              { num: "6", name: "Counseling for September Batch", desc: "Priority counseling seats allocated for our premium offline physical test batches commencing in September in Chennai.", value: "FREE" }
             ].map((bonus, i) => (
               <div
                 key={i}
@@ -2012,72 +2217,162 @@ export default function App() {
 
       {/* SECTION 10 – MEET YOUR SPEAKERS */}
       <section className="py-20 px-4 md:px-8 border-b border-amber-500/10 bg-[#030303]">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           
           <div className="text-center space-y-3 mb-16">
-            <span className="text-amber-400 font-bold uppercase text-xs tracking-widest block">Workshop Hosts</span>
+            <span className="text-amber-400 font-bold uppercase text-xs tracking-widest block">Workshop Hosts &amp; Mentors</span>
             <h2 className="text-3xl md:text-4xl font-extrabold font-display text-white">
               Meet Your Speakers
             </h2>
             <div className="w-16 h-1 bg-amber-500 mx-auto rounded-full"></div>
+            <p className="text-slate-400 text-xs md:text-sm max-w-xl mx-auto">
+              Learn directly from accomplished academy directors, government officers, and seasoned subject specialists.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             
             {/* Speaker 1: Founder */}
-            <div className="bg-[#0a0908] border border-amber-500/20 rounded-3xl p-6 md:p-8 space-y-6 flex flex-col items-center text-center group hover:border-amber-400/50 hover:bg-[#0c0a09] hover:shadow-md transition">
+            <div className="bg-[#0a0908] border border-amber-500/20 rounded-3xl p-6 md:p-8 space-y-5 flex flex-col items-center text-center group hover:border-amber-400/50 hover:bg-[#0c0a09] hover:shadow-lg transition duration-300">
               <div className="relative">
-                <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full blur opacity-20"></div>
+                <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full blur opacity-25 group-hover:opacity-60 transition"></div>
                 <img
                   src={MENTOR_IMAGE}
                   alt="Mohammed Rafi - Founder of Ambedkar Academy"
                   referrerPolicy="no-referrer"
-                  className="w-32 h-32 md:w-36 md:h-36 object-cover rounded-full border-2 border-slate-800 relative z-10"
+                  className="w-28 h-28 md:w-32 md:h-32 object-cover rounded-full border-2 border-amber-500/30 group-hover:border-amber-400 relative z-10 transition"
                 />
               </div>
 
               <div className="space-y-2">
-                <span className="text-[10px] font-black uppercase text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md tracking-wider">
+                <span className="text-[10px] font-black uppercase text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-md tracking-wider">
                   Academy Director
                 </span>
-                <h3 className="text-xl md:text-2xl font-extrabold text-white group-hover:text-amber-400 transition">
+                <h3 className="text-xl font-extrabold text-white group-hover:text-amber-400 transition">
                   Mohammed Rafi
                 </h3>
-                <p className="text-xs font-semibold text-slate-400">
+                <p className="text-xs font-semibold text-amber-500/90">
                   Founder – Ambedkar Academy, Chennai
                 </p>
-                <div className="w-10 h-0.5 bg-slate-800 mx-auto rounded-full mt-2"></div>
-                <p className="text-xs md:text-sm text-slate-400 leading-relaxed pt-2 max-w-sm">
+                <div className="w-10 h-0.5 bg-amber-500/20 mx-auto rounded-full mt-2"></div>
+                <p className="text-xs md:text-sm text-slate-400 leading-relaxed pt-2">
                   Dedicated to building a scientific preparation ecosystem for TNPSC aspirants through classroom coaching, mentorship schedules, testing tools, and real state-level model papers.
                 </p>
               </div>
             </div>
 
             {/* Speaker 2: Special Guest */}
-            <div className="bg-[#0a0908] border border-amber-500/20 rounded-3xl p-6 md:p-8 space-y-6 flex flex-col items-center text-center group hover:border-amber-400/50 hover:bg-[#0c0a09] hover:shadow-md transition">
+            <div className="bg-[#0a0908] border border-amber-500/20 rounded-3xl p-6 md:p-8 space-y-5 flex flex-col items-center text-center group hover:border-amber-400/50 hover:bg-[#0c0a09] hover:shadow-lg transition duration-300">
               <div className="relative">
-                <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full blur opacity-20"></div>
+                <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full blur opacity-25 group-hover:opacity-60 transition"></div>
                 <img
                   src={GUEST_IMAGE}
-                  alt="Special Guest - Active Government Officer"
+                  alt="Venkatachalapathy - Deputy Secretary (Retd) Govt of India"
                   referrerPolicy="no-referrer"
-                  className="w-32 h-32 md:w-36 md:h-36 object-cover rounded-full border-2 border-slate-800 relative z-10"
+                  className="w-28 h-28 md:w-32 md:h-32 object-cover rounded-full border-2 border-amber-500/30 group-hover:border-amber-400 relative z-10 transition"
                 />
               </div>
 
               <div className="space-y-2">
-                <span className="text-[10px] font-black uppercase text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md tracking-wider">
+                <span className="text-[10px] font-black uppercase text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-md tracking-wider">
                   Guest Speaker
                 </span>
-                <h3 className="text-xl md:text-2xl font-extrabold text-white group-hover:text-amber-400 transition">
+                <h3 className="text-xl font-extrabold text-white group-hover:text-amber-400 transition">
                   Venkatachalapathy
                 </h3>
-                <p className="text-xs font-semibold text-slate-500">
+                <p className="text-xs font-semibold text-amber-500/90">
                   Deputy Secretary (Retd) Govt of India
                 </p>
-                <div className="w-10 h-0.5 bg-slate-200 mx-auto rounded-full mt-2"></div>
-                <p className="text-xs md:text-sm text-slate-600 leading-relaxed pt-2 max-w-sm">
+                <div className="w-10 h-0.5 bg-amber-500/20 mx-auto rounded-full mt-2"></div>
+                <p className="text-xs md:text-sm text-slate-400 leading-relaxed pt-2">
                   The special guest officer will share practical civil preparation tips, effective exam-day mindset shifts, and general mental maths shortcuts to build confidence.
+                </p>
+              </div>
+            </div>
+
+            {/* Speaker 3: Mohan */}
+            <div className="bg-[#0a0908] border border-amber-500/20 rounded-3xl p-6 md:p-8 space-y-5 flex flex-col items-center text-center group hover:border-amber-400/50 hover:bg-[#0c0a09] hover:shadow-lg transition duration-300">
+              <div className="relative">
+                <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full blur opacity-25 group-hover:opacity-60 transition"></div>
+                <img
+                  src={SPEAKER_MOHAN}
+                  alt="Mohan - Senior Faculty - TNPSC Expert"
+                  referrerPolicy="no-referrer"
+                  className="w-28 h-28 md:w-32 md:h-32 object-cover rounded-full border-2 border-amber-500/30 group-hover:border-amber-400 relative z-10 transition"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-[10px] font-black uppercase text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-md tracking-wider">
+                  Senior Faculty
+                </span>
+                <h3 className="text-xl font-extrabold text-white group-hover:text-amber-400 transition">
+                  Mohan
+                </h3>
+                <p className="text-xs font-semibold text-amber-500/90">
+                  Senior Faculty &amp; TNPSC Expert
+                </p>
+                <div className="w-10 h-0.5 bg-amber-500/20 mx-auto rounded-full mt-2"></div>
+                <p className="text-xs md:text-sm text-slate-400 leading-relaxed pt-2">
+                  Veteran educator delivering in-depth syllabus analysis, core General Studies frameworks, and high-impact memory shortcuts for TNPSC exams.
+                </p>
+              </div>
+            </div>
+
+            {/* Speaker 4: P. Ravichanthiran */}
+            <div className="bg-[#0a0908] border border-amber-500/20 rounded-3xl p-6 md:p-8 space-y-5 flex flex-col items-center text-center group hover:border-amber-400/50 hover:bg-[#0c0a09] hover:shadow-lg transition duration-300">
+              <div className="relative">
+                <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full blur opacity-25 group-hover:opacity-60 transition"></div>
+                <img
+                  src={SPEAKER_RAVICHANTHIRAN}
+                  alt="P. Ravichanthiran - MSc, MEd (Maths) - Assistant (TNEB)"
+                  referrerPolicy="no-referrer"
+                  className="w-28 h-28 md:w-32 md:h-32 object-cover rounded-full border-2 border-amber-500/30 group-hover:border-amber-400 relative z-10 transition"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-[10px] font-black uppercase text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-md tracking-wider">
+                  Maths Mentor
+                </span>
+                <h3 className="text-xl font-extrabold text-white group-hover:text-amber-400 transition">
+                  P. Ravichanthiran
+                </h3>
+                <p className="text-xs font-semibold text-amber-500/90">
+                  MSc, M.Ed (Maths) | Assistant (TNEB)
+                </p>
+                <div className="w-10 h-0.5 bg-amber-500/20 mx-auto rounded-full mt-2"></div>
+                <p className="text-xs md:text-sm text-slate-400 leading-relaxed pt-2">
+                  Aptitude specialist and government officer teaching mental ability tricks, rapid formula shortcuts, and full 25/25 scoring tactics.
+                </p>
+              </div>
+            </div>
+
+            {/* Speaker 5: Sabith Ali */}
+            <div className="bg-[#0a0908] border border-amber-500/20 rounded-3xl p-6 md:p-8 space-y-5 flex flex-col items-center text-center group hover:border-amber-400/50 hover:bg-[#0c0a09] hover:shadow-lg transition duration-300">
+              <div className="relative">
+                <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full blur opacity-25 group-hover:opacity-60 transition"></div>
+                <img
+                  src={SPEAKER_SABITH_ALI}
+                  alt="Sabith Ali - Junior Cashier, Government Central Press"
+                  referrerPolicy="no-referrer"
+                  className="w-28 h-28 md:w-32 md:h-32 object-cover rounded-full border-2 border-amber-500/30 group-hover:border-amber-400 relative z-10 transition"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-[10px] font-black uppercase text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-md tracking-wider">
+                  Govt Official
+                </span>
+                <h3 className="text-xl font-extrabold text-white group-hover:text-amber-400 transition">
+                  Sabith Ali
+                </h3>
+                <p className="text-xs font-semibold text-amber-500/90">
+                  Junior Cashier, Govt Central Press
+                </p>
+                <div className="w-10 h-0.5 bg-amber-500/20 mx-auto rounded-full mt-2"></div>
+                <p className="text-xs md:text-sm text-slate-400 leading-relaxed pt-2">
+                  Serving government official providing real exam clearance guidance, daily consistency strategies, and exam-day mental composure.
                 </p>
               </div>
             </div>
@@ -2113,7 +2408,7 @@ export default function App() {
           <div className="bg-[#0a0908] border border-amber-500/20 p-6 rounded-2xl max-w-xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 text-center shadow-lg">
             <div className="space-y-1">
               <span className="block text-[10px] text-slate-500 uppercase tracking-wider font-bold">Date</span>
-              <span className="block text-sm font-bold text-white">August 16, 2026</span>
+              <span className="block text-sm font-bold text-white">September 20, 2026</span>
             </div>
             <div className="space-y-1 border-t md:border-t-0 md:border-x border-slate-800 py-3 md:py-0">
               <span className="block text-[10px] text-slate-500 uppercase tracking-wider font-bold">Time</span>
@@ -2209,7 +2504,7 @@ export default function App() {
             <p className="text-sm font-bold text-slate-900">
               TNPSC SUCCESS BLUEPRINT WORKSHOP 2026
               <span className="text-amber-500 font-extrabold mx-2">•</span>
-              <span className="text-slate-600 font-semibold">August 16 | 11 AM – 1 PM | </span>
+              <span className="text-slate-600 font-semibold">September 20 | 11 AM – 1 PM | </span>
               <span className="text-amber-700 font-bold uppercase bg-amber-500/10 px-1.5 py-0.5 rounded text-[10px] border border-amber-500/20 ml-1">FREE</span>
             </p>
           </div>

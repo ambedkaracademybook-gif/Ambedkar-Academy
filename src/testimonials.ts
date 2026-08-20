@@ -16,7 +16,7 @@ export const testimonials: Testimonial[] = [
     role: "TNPSC Group 4 Aspirant",
     feedback: "Ambedkar Academy's free guidance seminar instilled absolute confidence in me. The specific methodologies shared to face the 2026 exam are outstanding!",
     rating: 5,
-    image: "/images/Students (1).jpeg"
+    image: "/images/batches/batch-1.jpg"
   },
   {
     id: "t2",
@@ -25,7 +25,7 @@ export const testimonials: Testimonial[] = [
     role: "TNPSC Group 2 Aspirant",
     feedback: "This class gave me perfect clarity on how to break down the syllabus. The strategy to simplify Samacheer books was exceptionally helpful.",
     rating: 5,
-    image: "/images/Students (2).jpeg"
+    image: "/images/batches/batch-2.jpg"
   },
   {
     id: "t3",
@@ -34,7 +34,7 @@ export const testimonials: Testimonial[] = [
     role: "Repeat Aspirant (Group 2)",
     feedback: "The daily 30-minute practice formula has drastically boosted my speed and accuracy. The ₹1 Lakh worth free mock test is an amazing opportunity!",
     rating: 5,
-    image: "/images/Students (5).jpeg"
+    image: "/images/batches/batch-3.jpg"
   },
   {
     id: "t4",
@@ -43,7 +43,7 @@ export const testimonials: Testimonial[] = [
     role: "Group 1 Aspirant",
     feedback: "Direct mentoring and real-life success stories from government officials deeply inspired me. This is a must-attend workshop for every sincere aspirant.",
     rating: 5,
-    image: "/images/Students (6).jpeg"
+    image: "/images/batches/batch-4.jpg"
   },
   {
     id: "t5",
@@ -52,7 +52,7 @@ export const testimonials: Testimonial[] = [
     role: "Beginner Aspirant",
     feedback: "They explained secrets on what to study and what to skip in school textbooks. I am now confident that I can clear the exam in my very first attempt.",
     rating: 5,
-    image: "/images/Guest.png"
+    image: "/images/speakers/guest.png"
   },
   {
     id: "t6",
@@ -61,7 +61,7 @@ export const testimonials: Testimonial[] = [
     role: "Group 4 Aspirant",
     feedback: "Practicing daily mock questions through the Ambedkar Academy Mobile App is extremely easy. This free workshop is a true blessing!",
     rating: 5,
-    image: "/images/Mentor.png"
+    image: "/images/speakers/mentor.png"
   },
   {
     id: "t7",
@@ -70,7 +70,7 @@ export const testimonials: Testimonial[] = [
     role: "Group 2 & 4 Aspirant",
     feedback: "The simple shortcuts and memory tricks they shared for General Tamil and Aptitude are highly effective for securing top marks.",
     rating: 5,
-    image: "/images/Cash Price.png"
+    image: "/images/posters/cash-prize.png"
   },
   {
     id: "t8",
@@ -79,7 +79,7 @@ export const testimonials: Testimonial[] = [
     role: "Group 2 Aspirant",
     feedback: "Time management strategies and question paper analysis methods were super helpful. High-quality study booklets were also provided for free!",
     rating: 5,
-    image: "/images/Students (1).jpeg"
+    image: "/images/batches/batch-1.jpg"
   },
   {
     id: "t9",
@@ -88,7 +88,7 @@ export const testimonials: Testimonial[] = [
     role: "Beginner Aspirant",
     feedback: "The 6th to 12th standard 'Where to Study' guide provided during this workshop saved me hundreds of hours of manual search.",
     rating: 5,
-    image: "/images/Students (2).jpeg"
+    image: "/images/batches/batch-2.jpg"
   },
   {
     id: "t10",
@@ -97,7 +97,7 @@ export const testimonials: Testimonial[] = [
     role: "Group 4 Aspirant",
     feedback: "All my fears and doubts regarding the TNPSC exam pattern are completely gone now. The individual mentoring approach is truly remarkable.",
     rating: 5,
-    image: "/images/Students (5).jpeg"
+    image: "/images/batches/batch-3.jpg"
   },
   {
     id: "t11",
@@ -106,7 +106,7 @@ export const testimonials: Testimonial[] = [
     role: "Group 2 & 4 Aspirant",
     feedback: "This seminar is undoubtedly the ultimate roadmap for anyone preparing for the upcoming Group 4 exams. Highly recommended!",
     rating: 5,
-    image: "/images/Students (6).jpeg"
+    image: "/images/batches/batch-4.jpg"
   },
   {
     id: "t12",
@@ -115,7 +115,7 @@ export const testimonials: Testimonial[] = [
     role: "Repeat Aspirant",
     feedback: "The positive energy, encouragement, and clear methodology of the educators is highly motivating. Thank you so much, Ambedkar Academy!",
     rating: 5,
-    image: "/images/Guest.png"
+    image: "/images/speakers/guest.png"
   },
   {
     id: "t13",
@@ -124,7 +124,7 @@ export const testimonials: Testimonial[] = [
     role: "Group 4 Aspirant",
     feedback: "The 250-days challenge with 3000 questions has completely structured my daily routine. A phenomenal learning initiative!",
     rating: 5,
-    image: "/images/Mentor.png"
+    image: "/images/speakers/mentor.png"
   },
   {
     id: "t14",
@@ -133,7 +133,7 @@ export const testimonials: Testimonial[] = [
     role: "Group 2 Aspirant",
     feedback: "I never expected to receive such high-quality guidance, interactive study planners, and tips completely for free. Extremely grateful!",
     rating: 5,
-    image: "/images/Cash Price.png"
+    image: "/images/posters/cash-prize.png"
   },
   {
     id: "t15",
@@ -142,7 +142,7 @@ export const testimonials: Testimonial[] = [
     role: "Group 1 & 2 Aspirant",
     feedback: "Ambedkar Academy's mock exams are so authentic and well-crafted. Taking them feels exactly like sitting for the real TNPSC exam.",
     rating: 5,
-    image: "/images/Students (1).jpeg"
+    image: "/images/batches/batch-1.jpg"
   },
   {
     id: "t16",
@@ -151,7 +151,7 @@ export const testimonials: Testimonial[] = [
     role: "Group 4 Aspirant",
     feedback: "The shortcut methods for solving mental ability and aptitude questions in under 30 seconds are absolute game-changers for me.",
     rating: 5,
-    image: "/images/Students (2).jpeg"
+    image: "/images/batches/batch-2.jpg"
   },
   {
     id: "t17",
@@ -160,7 +160,7 @@ export const testimonials: Testimonial[] = [
     role: "Group 2 Aspirant",
     feedback: "Highly systematic and result-oriented approach. They don't just teach the syllabus; they teach the exact mindset required to pass.",
     rating: 5,
-    image: "/images/Students (5).jpeg"
+    image: "/images/batches/batch-3.jpg"
   },
   {
     id: "t18",
@@ -169,7 +169,7 @@ export const testimonials: Testimonial[] = [
     role: "Beginner Aspirant",
     feedback: "As a housemaker, managing time was my biggest hurdle. The customized study planner provided here made my preparation journey seamless.",
     rating: 5,
-    image: "/images/Students (6).jpeg"
+    image: "/images/batches/batch-4.jpg"
   },
   {
     id: "t19",
@@ -178,7 +178,7 @@ export const testimonials: Testimonial[] = [
     role: "Group 4 Aspirant",
     feedback: "The free offline classroom experience during the seminar was exceptional. Excellent environment, helpful mentors, and clear guidance.",
     rating: 5,
-    image: "/images/Guest.png"
+    image: "/images/speakers/guest.png"
   },
   {
     id: "t20",
@@ -187,6 +187,6 @@ export const testimonials: Testimonial[] = [
     role: "Group 2 & 4 Aspirant",
     feedback: "I drove all the way from my town to attend, and it was worth every minute! The materials given are highly valuable for revision.",
     rating: 5,
-    image: "/images/Mentor.png"
+    image: "/images/speakers/mentor.png"
   }
 ];

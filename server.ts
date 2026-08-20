@@ -186,14 +186,165 @@ async function startServer() {
         }
       }
 
+      // Dispatch WhatsApp message via AiSensy Campaign API
+      let aiSensyStatus = "not_configured";
+      const AISENSY_CONFIG_FILE = path.join(DATA_DIR, "aisensy_config.json");
+      let aiSensyApiKey = process.env.AISENSY_API_KEY || "";
+      if (!aiSensyApiKey && fs.existsSync(AISENSY_CONFIG_FILE)) {
+        try {
+          const cfg = JSON.parse(fs.readFileSync(AISENSY_CONFIG_FILE, "utf-8"));
+          aiSensyApiKey = cfg.apiKey || "";
+        } catch (e) {}
+      }
+
+      if (aiSensyApiKey && aiSensyApiKey.trim() !== "") {
+        try {
+          const cleanNum = (whatsAppNumber || "").replace(/\D/g, "");
+          const destination = cleanNum.length === 10 ? `91${cleanNum}` : cleanNum;
+
+          const aiSensyPayload = {
+            apiKey: aiSensyApiKey.trim(),
+            campaignName: "thanks msg for registrents",
+            destination,
+            userName: fullName || "Ambedkar Academy",
+            templateParams: [fullName || "Student"],
+            source: "new-landing-page form",
+            media: {
+              url: "https://d3jt6ku4g6z5l8.cloudfront.net/IMAGE/6353da2e153a147b991dd812/4958901_highanglekidcheatingschooltestmin.jpg",
+              filename: "sample_media",
+            },
+            buttons: [],
+            carouselCards: [],
+            location: {},
+            attributes: {},
+            paramsFallbackValue: {},
+          };
+
+          console.log(`[AiSensy WhatsApp] Sending confirmation message to destination ${destination}...`);
+          const aiSensyRes = await fetch("https://backend.aisensy.com/campaign/t1/api/v2", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(aiSensyPayload),
+          });
+
+          const aiSensyData = await aiSensyRes.json().catch(() => ({}));
+          console.log(`[AiSensy WhatsApp] Response (${aiSensyRes.status}):`, aiSensyData);
+          if (aiSensyRes.ok) {
+            aiSensyStatus = "success";
+          } else {
+            aiSensyStatus = `failed_${aiSensyRes.status}`;
+          }
+        } catch (aiSensyErr: any) {
+          console.error("[AiSensy WhatsApp] Error sending message:", aiSensyErr);
+          aiSensyStatus = `error_${aiSensyErr.message}`;
+        }
+      } else {
+        console.log("[AiSensy WhatsApp] No AISENSY_API_KEY provided; skipping WhatsApp notification.");
+      }
+
       return res.status(200).json({
         success: true,
         message: isDuplicate ? "Seat reserved already" : "Registration successful",
         sheetStatus,
+        aiSensyStatus,
         leadId: newLead.id,
       });
     } catch (error: any) {
       console.error("Registration endpoint error:", error);
+      return res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  // API Route: AiSensy Config & Status
+  app.get("/api/aisensy/config", (req, res) => {
+    try {
+      const AISENSY_CONFIG_FILE = path.join(DATA_DIR, "aisensy_config.json");
+      let configured = Boolean(process.env.AISENSY_API_KEY && process.env.AISENSY_API_KEY.trim());
+      let maskedKey = "";
+      if (process.env.AISENSY_API_KEY) {
+        const key = process.env.AISENSY_API_KEY.trim();
+        maskedKey = key.length > 8 ? `${key.substring(0, 4)}...${key.substring(key.length - 4)}` : "********";
+      } else if (fs.existsSync(AISENSY_CONFIG_FILE)) {
+        try {
+          const cfg = JSON.parse(fs.readFileSync(AISENSY_CONFIG_FILE, "utf-8"));
+          if (cfg.apiKey && cfg.apiKey.trim()) {
+            configured = true;
+            const key = cfg.apiKey.trim();
+            maskedKey = key.length > 8 ? `${key.substring(0, 4)}...${key.substring(key.length - 4)}` : "********";
+          }
+        } catch (e) {}
+      }
+      return res.json({ success: true, isConfigured: configured, maskedKey });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  // API Route: Save AiSensy API Key
+  app.post("/api/aisensy/save-key", (req, res) => {
+    try {
+      const { apiKey } = req.body;
+      if (!apiKey || !apiKey.trim()) {
+        return res.status(400).json({ success: false, error: "API key is required" });
+      }
+      const AISENSY_CONFIG_FILE = path.join(DATA_DIR, "aisensy_config.json");
+      fs.writeFileSync(AISENSY_CONFIG_FILE, JSON.stringify({ apiKey: apiKey.trim(), updatedAt: new Date().toISOString() }, null, 2));
+      return res.json({ success: true, message: "AiSensy API key saved successfully" });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  // API Route: Test AiSensy WhatsApp message
+  app.post("/api/aisensy/test", async (req, res) => {
+    try {
+      const { destination, apiKey: overrideKey } = req.body;
+      if (!destination) {
+        return res.status(400).json({ success: false, error: "Destination phone number is required" });
+      }
+      const AISENSY_CONFIG_FILE = path.join(DATA_DIR, "aisensy_config.json");
+      let activeKey = overrideKey || process.env.AISENSY_API_KEY || "";
+      if (!activeKey && fs.existsSync(AISENSY_CONFIG_FILE)) {
+        try {
+          const cfg = JSON.parse(fs.readFileSync(AISENSY_CONFIG_FILE, "utf-8"));
+          activeKey = cfg.apiKey || "";
+        } catch (e) {}
+      }
+      if (!activeKey) {
+        return res.status(400).json({ success: false, error: "No AiSensy API key found. Please save a key or set AISENSY_API_KEY." });
+      }
+
+      const cleanNum = destination.replace(/\D/g, "");
+      const formattedDest = cleanNum.length === 10 ? `91${cleanNum}` : cleanNum;
+
+      const aiSensyPayload = {
+        apiKey: activeKey.trim(),
+        campaignName: "thanks msg for registrents",
+        destination: formattedDest,
+        userName: "Ambedkar Academy",
+        templateParams: ["Aspirant"],
+        source: "new-landing-page form",
+        media: {
+          url: "https://d3jt6ku4g6z5l8.cloudfront.net/IMAGE/6353da2e153a147b991dd812/4958901_highanglekidcheatingschooltestmin.jpg",
+          filename: "sample_media",
+        },
+        buttons: [],
+        carouselCards: [],
+        location: {},
+        attributes: {},
+        paramsFallbackValue: {},
+      };
+
+      const aiSensyRes = await fetch("https://backend.aisensy.com/campaign/t1/api/v2", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(aiSensyPayload),
+      });
+      const data = await aiSensyRes.json().catch(() => ({}));
+      return res.status(aiSensyRes.status).json({ success: aiSensyRes.ok, data });
+    } catch (error: any) {
       return res.status(500).json({ success: false, error: error.message });
     }
   });
