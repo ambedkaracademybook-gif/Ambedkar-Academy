@@ -38,6 +38,24 @@ import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import firebaseConfig from "../firebase-applet-config.json";
 import { testimonials } from "./testimonials";
+import {
+  IMG_batch1,
+  IMG_batch2,
+  IMG_batch3,
+  IMG_batch4,
+  IMG_challenge,
+  IMG_cashPrize,
+  IMG_mentor,
+  IMG_guest,
+  IMG_mohan,
+  IMG_ravichanthiran,
+  IMG_sabithAli,
+  IMG_review1,
+  IMG_review2,
+  IMG_review3,
+  IMG_review4,
+  IMG_review5
+} from "./assets/images";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -45,14 +63,14 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 provider.addScope("https://www.googleapis.com/auth/spreadsheets");
 
-// Asset paths based on generated images
-const CHALLENGE_IMAGE = "/images/posters/challenge.png";
-const CASH_PRIZE_IMAGE = "/images/posters/cash-prize.png";
-const MENTOR_IMAGE = "/images/speakers/mentor.png";
-const GUEST_IMAGE = "/images/speakers/guest.png";
-const SPEAKER_MOHAN = "/images/speakers/mohan.jpg";
-const SPEAKER_RAVICHANTHIRAN = "/images/speakers/ravichanthiran.jpg";
-const SPEAKER_SABITH_ALI = "/images/speakers/sabith-ali.jpg";
+// Guaranteed bundled image assets for 100% reliable rendering on Vercel & GitHub
+const CHALLENGE_IMAGE = IMG_challenge;
+const CASH_PRIZE_IMAGE = IMG_cashPrize;
+const MENTOR_IMAGE = IMG_mentor;
+const GUEST_IMAGE = IMG_guest;
+const SPEAKER_MOHAN = IMG_mohan;
+const SPEAKER_RAVICHANTHIRAN = IMG_ravichanthiran;
+const SPEAKER_SABITH_ALI = IMG_sabithAli;
 
 export default function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
@@ -1464,23 +1482,23 @@ export default function App() {
             className="flex overflow-x-auto gap-6 pb-8 no-scrollbar"
           >
             {[
-              { id: "b1", name: "Batch 1", label: "Intensive Classroom Batch", img: "batches/batch-1.jpg" },
-              { id: "b2", name: "Batch 2", label: "Offline Guidance Workshop", img: "batches/batch-2.jpg" },
-              { id: "b3", name: "Batch 3", label: "Mentorship & Strategy Batch", img: "batches/batch-3.jpg" },
-              { id: "b4", name: "Batch 4", label: "Aspirants Interactive Lecture", img: "batches/batch-4.jpg" },
-              { id: "b1-2", name: "Batch 1", label: "Intensive Classroom Batch", img: "batches/batch-1.jpg" },
-              { id: "b2-2", name: "Batch 2", label: "Offline Guidance Workshop", img: "batches/batch-2.jpg" },
-              { id: "b3-2", name: "Batch 3", label: "Mentorship & Strategy Batch", img: "batches/batch-3.jpg" },
-              { id: "b4-2", name: "Batch 4", label: "Aspirants Interactive Lecture", img: "batches/batch-4.jpg" },
+              { id: "b1", name: "Batch 1", label: "Intensive Classroom Batch", img: IMG_batch1 },
+              { id: "b2", name: "Batch 2", label: "Offline Guidance Workshop", img: IMG_batch2 },
+              { id: "b3", name: "Batch 3", label: "Mentorship & Strategy Batch", img: IMG_batch3 },
+              { id: "b4", name: "Batch 4", label: "Aspirants Interactive Lecture", img: IMG_batch4 },
+              { id: "b1-2", name: "Batch 1", label: "Intensive Classroom Batch", img: IMG_batch1 },
+              { id: "b2-2", name: "Batch 2", label: "Offline Guidance Workshop", img: IMG_batch2 },
+              { id: "b3-2", name: "Batch 3", label: "Mentorship & Strategy Batch", img: IMG_batch3 },
+              { id: "b4-2", name: "Batch 4", label: "Aspirants Interactive Lecture", img: IMG_batch4 },
             ].map((batch, i) => (
               <div
                 key={i}
-                onClick={() => setSelectedReviewImage(`/images/${batch.img}`)}
+                onClick={() => setSelectedReviewImage(batch.img)}
                 className="w-[280px] sm:w-[320px] md:w-[360px] bg-[#101010] border border-amber-500/20 hover:border-amber-400/60 rounded-2xl overflow-hidden shrink-0 flex flex-col justify-between group transition-all duration-300 shadow-lg cursor-pointer hover:-translate-y-1"
               >
                 <div className="relative h-[200px] md:h-[230px] w-full overflow-hidden bg-slate-900 flex items-center justify-center">
                   <img 
-                    src={`/images/${batch.img}`} 
+                    src={batch.img} 
                     alt={batch.name} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
@@ -1602,7 +1620,7 @@ export default function App() {
                 role: "Free Class Feedback",
                 rating: 5,
                 text: "இந்த free class எனக்கு ரொம்ப பயனுள்ளதாக இருந்தது... Maths ரொம்ப ஆச்சரியமாக இருந்தது!",
-                image: "/images/reviews/review-1.jpeg"
+                image: IMG_review1
               },
               {
                 id: "r2",
@@ -1610,7 +1628,7 @@ export default function App() {
                 role: "Guidance Session",
                 rating: 5,
                 text: "Very informative session, excellent faculty delivery and clear exam preparation strategy.",
-                image: "/images/reviews/review-2.jpeg"
+                image: IMG_review2
               },
               {
                 id: "r3",
@@ -1618,7 +1636,7 @@ export default function App() {
                 role: "Maths & Aptitude Class",
                 rating: 5,
                 text: "Maths faculty teaching was good! Inspiring session for Group 2 & 4 aspirants.",
-                image: "/images/reviews/review-3.jpeg"
+                image: IMG_review3
               },
               {
                 id: "r4",
@@ -1626,7 +1644,7 @@ export default function App() {
                 role: "Google Review",
                 rating: 5,
                 text: "Good teaching, supportive faculty and a great place to learn. Highly recommended!",
-                image: "/images/reviews/review-4.jpeg"
+                image: IMG_review4
               },
               {
                 id: "r5",
@@ -1634,7 +1652,7 @@ export default function App() {
                 role: "Offline Workshop",
                 rating: 5,
                 text: "Proper guidance, offline classroom environment, clear preparation strategy and syllabus breakdown.",
-                image: "/images/reviews/review-5.jpeg"
+                image: IMG_review5
               }
             ].map((review) => (
               <div 
