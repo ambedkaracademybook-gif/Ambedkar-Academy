@@ -1,0 +1,14 @@
+# Treat all image and media files as strict binary to prevent Git from altering bytes or converting CRLF/LF
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.mp4 binary
+*.mp3 binary
